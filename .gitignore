@@ -1,3 +1,6 @@
 /test.php
 sys_admin/
 sys_customer/
+/tests/
+
+/vendor/
