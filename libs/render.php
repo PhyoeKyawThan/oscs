@@ -1,6 +1,6 @@
 <?php
-include __DIR__.'/../config.php';
-class Render extends Config
+// include __DIR__.'/../config.php';
+class Render 
 {
     private static string $current_uri = "";
     private static $routes = [];

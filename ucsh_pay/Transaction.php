@@ -10,6 +10,7 @@ class Transaction extends Database
     public int $amount;
     public int $balance_after;
     public ?string $reference = null;
+    public ?string $notes = null;
 
     public function __construct()
     {
@@ -17,6 +18,16 @@ class Transaction extends Database
         $this->transaction_uuid = Utils::generateUUID();
     }
 
+    public function toAssoc(){
+        return [
+            "transaction_uuid" => $this->transaction_uuid,
+            "type" => $this->type,
+            "amount" => $this->amount,
+            "balance" => $this->balance_after,
+            "reference" => $this->reference,
+            "message" => $this->notes,
+        ];
+    }
     public function log(): int
     {
         $stmt = $this->connection->prepare(Queries::$transaction_insert["query"]);
@@ -27,7 +38,8 @@ class Transaction extends Database
             $this->type,
             $this->amount,
             $this->balance_after,
-            $this->reference
+            $this->reference,
+            $this->notes
         );
 
         $stmt->execute();
@@ -51,4 +63,5 @@ class Transaction extends Database
         $stmt->close();
         return $transactions;
     }
+
 }

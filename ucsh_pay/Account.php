@@ -92,4 +92,12 @@ class Account extends Database
 
         $stmt->close();
     }
+
+    public function toJson(){
+        return [
+            "account_uuid" => $this->account_uuid,
+            "username" => $this->username,
+            "balance" => $this->balance
+        ];
+    }
 }

@@ -37,9 +37,9 @@ class Queries
                     VALUES (?, ?, ?)"
     ];
     public static array $transaction_insert = [
-    "types" => "sssis",
-    "query" => "INSERT INTO transactions (transaction_uuid, account_uuid, type, amount, balance_after, reference)
-                VALUES (?, ?, ?, ?, ?, ?)"
+    "types" => "sssiiss",
+    "query" => "INSERT INTO transactions (transaction_uuid, account_uuid, type, amount, balance_after, reference, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?)"
 ];
 
 }

@@ -1,10 +1,12 @@
 <?php
+
 namespace Ucsh_pay\Ucshpay;
 
 use Exception;
 
 class PaymentService extends Database
 {
+    public array $transaction_log = [];
     public function __construct()
     {
         parent::__construct();
@@ -13,7 +15,7 @@ class PaymentService extends Database
     /**
      * Process a payment and log transaction
      */
-    public function processPayment(string $user_uuid, string $account_uuid, int $amount, ?string $reference = null): int
+    public function processPayment(string $user_uuid, string $account_uuid, int $amount, ?string $reference = null, ?string $notes): int
     {
         $account = new Account();
         $account->connection = $this->connection; // share connection
@@ -45,14 +47,14 @@ class PaymentService extends Database
             $transaction->connection = $this->connection;
             $transaction->account_uuid = $account_uuid;
             $transaction->type = 'debit';
+            $transaction->notes = $notes;
             $transaction->amount = $amount;
             $transaction->balance_after = $account->checkBalance();
             $transaction->reference = $reference;
             $transaction->log();
-
             $this->commit();
+            $this->transaction_log = $transaction->toAssoc();
             return $paymentId;
-
         } catch (Exception $e) {
             $this->rollback();
             throw $e;
@@ -62,10 +64,11 @@ class PaymentService extends Database
     /**
      * Credit balance to account and log transaction
      */
-    public function creditAccount(string $account_uuid, int $amount, ?string $reference = null): int
+    public function creditAccount(string $user_uuid, string $account_uuid, int $amount, ?string $reference = null, ?string $notes): int
     {
         $account = new Account();
         $account->connection = $this->connection;
+        $account->user_uuid = $user_uuid;
         $account->account_uuid = $account_uuid;
 
         $this->begin();
@@ -83,11 +86,12 @@ class PaymentService extends Database
             $transaction->amount = $amount;
             $transaction->balance_after = $balanceAfter;
             $transaction->reference = $reference;
+            $transaction->notes = $notes;
             $transaction->log();
 
             $this->commit();
+            $this->transaction_log = $transaction->toAssoc();
             return $balanceAfter;
-
         } catch (Exception $e) {
             $this->rollback();
             throw $e;
