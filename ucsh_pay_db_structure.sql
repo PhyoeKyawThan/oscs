@@ -76,11 +76,12 @@ CREATE TABLE `transactions` (
   `balance_after` int NOT NULL,
   `reference` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `notes` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_uuid` (`transaction_uuid`),
   KEY `idx_tx_account` (`account_uuid`),
   CONSTRAINT `fk_tx_account` FOREIGN KEY (`account_uuid`) REFERENCES `account` (`account_uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,4 +112,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-16  1:20:49
+-- Dump completed on 2026-01-16  2:27:33
