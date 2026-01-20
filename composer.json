@@ -1,7 +1,0 @@
-{
-    "autoload": {
-        "psr-4": {
-            "Ucsh_pay\\Ucshpay\\": "ucsh_pay/"
-        }
-    }
-}
