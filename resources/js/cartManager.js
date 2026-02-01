@@ -1,4 +1,4 @@
-class CartManager {
+export default class CartManager {
     constructor() {
         this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
         this.init();
@@ -135,15 +135,16 @@ class CartManager {
 
         // Update cart header info
         cartItemCount.textContent = `${data.cart_count} ${data.cart_count === 1 ? 'item' : 'items'}`;
-
         // Calculate totals
-        const subtotal = parseFloat(data.cart_total) || 0;
+        const subtotal = parseFloat(data.cart_total);
+        window.data = data;
+        console.log(typeof (subtotal))
+        console.log(subtotal)
         const shipping = subtotal > 50 ? 0 : 5.99; // Free shipping over $50
-        const total = subtotal + shipping;
-
-        cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+        const total = parseFloat(subtotal + shipping);
+        cartSubtotal.textContent = `${subtotal.toFixed(2)} MMKS`;
         document.getElementById('cartShipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
-        cartTotal.textContent = `$${total.toFixed(2)}`;
+        cartTotal.textContent = `${total.toFixed(2)} MMKS`;
 
         // Update cart items
         if (data.cart_count > 0 && data.cart_items) {
@@ -169,8 +170,8 @@ class CartManager {
                     <div class="ml-4 flex-1">
                         <h4 class="font-bold text-sm mb-1">${item.name}</h4>
                         <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">${item.category}</p>
-                        <p class="text-primary font-bold">$${parseFloat(item.price).toFixed(2)} each</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Total: $${itemTotal}</p>
+                        <p class="text-primary font-bold">${parseFloat(item.price).toFixed(2)} MMKS each</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Total: ${itemTotal} MMKS</p>
                     </div>
                     
                     <!-- Quantity Controls -->
@@ -404,15 +405,3 @@ class CartManager {
     }
 }
 
-// Initialize cart manager when DOM is loaded
-document.addEventListener('DOMContentLoaded', function () {
-    window.cartManager = new CartManager();
-
-    // Make addToCart function globally available for inline onclick
-    window.addToCart = function (productId, quantity = 1) {
-        if (window.cartManager) {
-            return window.cartManager.addToCart(productId, quantity);
-        }
-        return false;
-    };
-});

@@ -89,7 +89,7 @@
                             <div class="p-4">
                                 <!-- Category Badge -->
                                 <div class="mb-2">
-                                    <span class="inline-block px-2 py-1 bg-primary bg-opacity-10 text-primary text-xs rounded-full">
+                                    <span class="inline-block px-2 py-1 bg-primary bg-opacity-10 text-gray-200 font-bold text-xs rounded-full">
                                         {{ $product->category->name ?? 'Uncategorized' }}
                                     </span>
                                 </div>

@@ -279,8 +279,6 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 window.cartManager = new CartManager();
-
-                // Make addToCart function globally available for inline onclick
                 window.addToCart = function (productId, quantity = 1) {
                     if (window.cartManager) {
                         return window.cartManager.addToCart(productId, quantity);

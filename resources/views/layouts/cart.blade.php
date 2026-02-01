@@ -66,7 +66,7 @@
 </div>
 
 <!-- Cart Overlay -->
-<div id="cartOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+<div id="cartOverlay" class="fixed inset-0 bg-black/50 dark:bg-black/70 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
 <style>
     #cartSidebar > *{
         font-size: 12px;
