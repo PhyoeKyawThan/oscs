@@ -38,7 +38,7 @@ class OrderController extends Controller
 
         // Decode delivery information
         // $deliveryInfo = json_decode($order->delivery_information, true);
-        $deliveryInfo = $order->delivery_info;
+        $deliveryInfo = $order->delivery_information;
 
         return view('customer.orders.show', compact('order', 'deliveryInfo'));
     }
