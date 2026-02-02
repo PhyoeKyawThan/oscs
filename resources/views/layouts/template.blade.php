@@ -69,7 +69,7 @@
                         <a href="{{ route("customer.home.index") }}" class="nav-link active" data-page="home">Home</a>
                         <a href="{{ route("products.index") }}" class="nav-link" data-page="products">Products</a>
                         @if (auth()->user())
-                            <a href="#" class="nav-link" data-page="orders">My Orders</a>
+                            <a href="{{ route('customer.orders.index') }}" class="nav-link" data-page="orders">My Orders</a>
                         @endif
                     </nav>
 
@@ -101,8 +101,10 @@
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700" data-page="signup">Sign
                                     Up</a>
                             @else
-                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    data-page="orders">Order Status</a>
+                            <a href="{{ route('profile.index') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    data-page="orders">Profile</a>
+                                {{-- <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    data-page="orders">Order Status</a> --}}
                                 <hr class="my-2 border-gray-200 dark:border-gray-700">
                                 <form action="{{ route('logout') }}" method="post">
                                     @csrf
@@ -272,6 +274,7 @@
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     @stack('scripts')
 </body>
 

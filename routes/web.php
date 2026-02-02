@@ -3,7 +3,9 @@
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthCustomer;
 use App\Http\Middleware\GuestCustomer;
@@ -24,6 +26,7 @@ Route::middleware(GuestCustomer::class)->group(function () {
     // auth
     Route::get('/login', [UserController::class, 'login'])->name("customer.login.index");
     Route::get('/signup', [UserController::class, 'signup'])->name("customer.signup.index");
+    Route::post('/signup', [UserController::class, 'signup'])->name('signup.store');
     Route::post('/login', [UserController::class, 'login'])->name('doLogin');
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('cart.index');
@@ -40,5 +43,19 @@ Route::middleware(AuthCustomer::class)->group(function () {
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
-    Route::get('/profile', [UserController::class, 'profile'])->name('customer.profile');
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile.index');
+    Route::post('/profile', [ProfileController::class, 'profile'])->name('profile.update');
+    Route::get('/profile/data', [ProfileController::class, 'getProfileData'])->name('profile.data');
+    Route::delete('/profile', [ProfileController::class, 'deleteAccount'])->name('profile.delete');
+
+    // Order listing and management
+    Route::get('/orders', [OrderController::class, 'index'])->name('customer.orders.index');
+    Route::get('/orders/history', [OrderController::class, 'getOrderHistory'])->name('customer.orders.history');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('customer.orders.show');
+    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('customer.orders.cancel');
+    Route::get('/orders/{order}/track', [OrderController::class, 'track'])->name('customer.orders.track');
+    Route::post('/orders/{order}/reorder', [OrderController::class, 'reorder'])->name('customer.orders.reorder');
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('customer.orders.invoice');
+    Route::get('/orders/stats', [OrderController::class, 'getOrderStats'])->name('customer.orders.stats');
+    Route::get('/orders/{orderNumber}/invoice/download', [OrderController::class, 'invoice'])->name('customer.orders.invoice.download');
 });

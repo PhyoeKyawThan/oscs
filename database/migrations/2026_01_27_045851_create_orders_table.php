@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('order_number', length: 100)->nullable(false)->unique(true);
-            $table->enum('status', ['Pending', 'On Delivery', 'Completed'])->default('Pending');
+            $table->enum('status', ['Pending', 'On Delivery', 'Completed', 'Cancelled'])->default('Pending');
             $table->decimal('total_amount',10,2)->nullable(false)->default(0);
+            $table->json('delivery_information')->nullable(false);
             $table->timestamps();
         });
     }
