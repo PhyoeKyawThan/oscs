@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OrderItems;
 use App\Models\Orders;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
@@ -16,22 +17,22 @@ class CheckoutController extends Controller
             return redirect()->route('customer.login.index')
                 ->with('error', 'Please login to proceed to checkout.');
         }
-        
+
         // Get cart items from session
         $cartItems = session()->get('cart', []);
-        
+
         if (empty($cartItems)) {
             return redirect()->route('cart.index')
                 ->with('error', 'Your cart is empty. Add items to checkout.');
         }
-        
+
         // Calculate totals
         $subtotal = $this->calculateSubtotal($cartItems);
         $tax = $this->calculateTax($subtotal);
         $shipping = 5.99; // Default shipping
         $discount = 0; // Calculate discount if any
         $total = $subtotal + $tax + $shipping - $discount;
-        
+
         return view('customer.checkout.index', compact(
             'cartItems',
             'subtotal',
@@ -41,7 +42,7 @@ class CheckoutController extends Controller
             'total'
         ));
     }
-    
+
     public function process(Request $request)
     {
         // Validate the request
@@ -57,21 +58,21 @@ class CheckoutController extends Controller
             'delivery.country' => 'required|string',
             'payment.method' => 'required|in:credit-card,paypal,cod',
         ]);
-        
+
         // Process payment based on method
         $paymentMethod = $request->input('payment.method');
-        
+
         try {
             // Create order
             $order = $this->createOrder($request);
-            
+
             // Process payment
             $paymentResult = $this->processPayment($paymentMethod, $request);
-            
+
             if ($paymentResult['success']) {
                 // Clear cart
                 session()->forget('cart');
-                
+
                 return response()->json([
                     'success' => true,
                     'order_id' => $order->id,
@@ -90,19 +91,19 @@ class CheckoutController extends Controller
             ], 500);
         }
     }
-    
+
     public function success($orderId)
     {
         $order = Orders::with('items')->findOrFail($orderId);
-        
+
         // Verify that the order belongs to the authenticated user
         if ($order->user_id !== Auth::id()) {
             abort(403);
         }
-        
+
         return view('customer.checkout.success', compact('order'));
     }
-    
+
     private function calculateSubtotal($cartItems)
     {
         $subtotal = 0;
@@ -111,66 +112,113 @@ class CheckoutController extends Controller
         }
         return $subtotal;
     }
-    
+
     private function calculateTax($subtotal)
     {
         // Example: 8.25% tax rate
         return $subtotal * 0.0825;
     }
-    
-    private function createOrder(Request $request)
+
+    public function store(Request $request)
     {
-        $cartItems = session()->get('cart', []);
-        
-        $order = Orders::create([
-            'user_id' => Auth::id(),
-            'order_number' => 'ORD-' . strtoupper(uniqid()),
-            'status' => 'pending',
-            'subtotal' => $this->calculateSubtotal($cartItems),
-            'tax' => $this->calculateTax($this->calculateSubtotal($cartItems)),
-            'shipping' => $request->input('delivery.delivery_method') === 'pickup' ? 0 : 
-                         ($request->input('delivery.delivery_method') === 'express' ? 12.99 : 5.99),
-            'total' => $request->input('totals.total'),
-            'payment_method' => $request->input('payment.method'),
-            'payment_status' => 'pending',
-            'shipping_method' => $request->input('delivery.delivery_method'),
-            'shipping_address' => json_encode($request->input('delivery')),
-            'notes' => $request->input('delivery.delivery_instructions'),
+        // 1. Validation
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'postal_code' => 'required',
+            'delivery_method' => 'required',
         ]);
-        
-        // Create order items
-        foreach ($cartItems as $item) {
-            OrderItems::create([
-                'order_id' => $order->id,
-                'product_id' => $item['id'],
-                'name' => $item['name'],
-                'price' => $item['price'],
-                'quantity' => $item['quantity'],
-                'total' => $item['price'] * $item['quantity'],
-            ]);
+
+        // 2. Get Cart Data
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return response()->json(['success' => false, 'message' => 'Cart is empty'], 400);
         }
-        
-        return $order;
+
+        try {
+            return DB::transaction(function () use ($validated, $cart) {
+                // Calculate totals
+                $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+                $shipping = $validated['delivery_method'] === 'pickup' ? 0 :
+                    ($validated['delivery_method'] === 'express' ? 12.99 : 5.99);
+                $tax = $subtotal * 0.1; // 10% tax
+                $total = $subtotal + $shipping + $tax;
+
+                // 3. Create Order
+                $order = Orders::create([
+                    'order_number' => 'ORD-' . strtoupper(uniqid()),
+                    'user_id' => Auth::id(),
+                    'status' => 'Pending',
+                    'subtotal' => $subtotal,
+                    'shipping_cost' => $shipping,
+                    'tax_amount' => $tax,
+                    'total_amount' => $total,
+                    'delivery_information' => [
+                        'name' => $validated['name'],
+                        'email' => $validated['email'],
+                        'phone' => $validated['phone'],
+                        'address' => $validated['address'],
+                        'city' => $validated['city'],
+                        'state' => $validated['state'],
+                        'postal_code' => $validated['postal_code'],
+                        'method' => $validated['delivery_method'],
+                        'instructions' => $request->delivery_instructions ?? null
+                    ],
+                    'payment_method' => 'COD',
+                    'payment_status' => 'Pending'
+                ]);
+
+                // 4. Create Order Items
+                foreach ($cart as $id => $details) {
+                    OrderItems::create([
+                        'order_id' => $order->id,
+                        'product_id' => $id,
+                        'quantity' => $details['quantity'],
+                        'price' => $details['price']
+                    ]);
+                }
+
+                // 5. Clear Cart
+                session()->forget('cart');
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Order placed successfully!',
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'redirect' => route('customer.orders.show', $order->order_number)
+                ]);
+            });
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again.'
+            ], 500);
+        }
     }
-    
+
     private function processPayment($method, Request $request)
     {
         // In a real application, you would integrate with payment gateways
         // This is a simplified example
-        
+
         switch ($method) {
             case 'credit-card':
                 // Process credit card payment (integrate with Stripe, PayPal, etc.)
                 return ['success' => true, 'message' => 'Payment processed'];
-                
+
             case 'paypal':
                 // Redirect to PayPal
                 return ['success' => true, 'message' => 'Redirect to PayPal'];
-                
+
             case 'cod':
                 // Cash on delivery - no payment processing needed
                 return ['success' => true, 'message' => 'Cash on delivery selected'];
-                
+
             default:
                 return ['success' => false, 'message' => 'Invalid payment method'];
         }

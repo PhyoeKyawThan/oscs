@@ -27,7 +27,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 199.99,
                 'stock' => 25,
                 'category_id' => $electronicsId,
-                'product_image' => 'products/headphones.jpg'
+                'image' => 'products/headphones.jpg'
             ],
             [
                 'name' => 'Smart Watch Pro',
@@ -35,7 +35,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 299.99,
                 'stock' => 15,
                 'category_id' => $electronicsId,
-                'product_image' => 'products/smartwatch.jpg'
+                'image' => 'products/smartwatch.jpg'
             ],
             [
                 'name' => 'Laptop 15" Ultrabook',
@@ -43,7 +43,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 899.99,
                 'stock' => 8,
                 'category_id' => $electronicsId,
-                'product_image' => 'products/laptop.jpg'
+                'image' => 'products/laptop.jpg'
             ],
             [
                 'name' => 'Wireless Earbuds',
@@ -51,7 +51,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 79.99,
                 'stock' => 50,
                 'category_id' => $electronicsId,
-                'product_image' => 'products/earbuds.jpg'
+                'image' => 'products/earbuds.jpg'
             ],
             
             // Fashion
@@ -61,7 +61,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 149.99,
                 'stock' => 12,
                 'category_id' => $fashionId,
-                'product_image' => 'products/jacket.jpg'
+                'image' => 'products/jacket.jpg'
             ],
             [
                 'name' => 'Running Shoes',
@@ -69,7 +69,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 89.99,
                 'stock' => 30,
                 'category_id' => $fashionId,
-                'product_image' => 'products/shoes.jpg'
+                'image' => 'products/shoes.jpg'
             ],
             [
                 'name' => 'Casual T-Shirt',
@@ -77,7 +77,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 24.99,
                 'stock' => 100,
                 'category_id' => $fashionId,
-                'product_image' => 'products/tshirt.jpg'
+                'image' => 'products/tshirt.jpg'
             ],
             [
                 'name' => 'Designer Handbag',
@@ -85,7 +85,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 249.99,
                 'stock' => 6,
                 'category_id' => $fashionId,
-                'product_image' => 'products/handbag.jpg'
+                'image' => 'products/handbag.jpg'
             ],
             
             // Home & Kitchen
@@ -95,7 +95,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 79.99,
                 'stock' => 20,
                 'category_id' => $homeId,
-                'product_image' => 'products/coffeemaker.jpg'
+                'image' => 'products/coffeemaker.jpg'
             ],
             [
                 'name' => 'Air Fryer',
@@ -103,7 +103,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 129.99,
                 'stock' => 18,
                 'category_id' => $homeId,
-                'product_image' => 'products/airfryer.jpg'
+                'image' => 'products/airfryer.jpg'
             ],
             [
                 'name' => 'Bed Sheet Set',
@@ -111,7 +111,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 69.99,
                 'stock' => 35,
                 'category_id' => $homeId,
-                'product_image' => 'products/bedsheets.jpg'
+                'image' => 'products/bedsheets.jpg'
             ],
             [
                 'name' => 'Robot Vacuum',
@@ -119,7 +119,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 299.99,
                 'stock' => 10,
                 'category_id' => $homeId,
-                'product_image' => 'products/vacuum.jpg'
+                'image' => 'products/vacuum.jpg'
             ],
             
             // Sports & Outdoors
@@ -129,7 +129,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 34.99,
                 'stock' => 40,
                 'category_id' => $sportsId,
-                'product_image' => 'products/yogamat.jpg'
+                'image' => 'products/yogamat.jpg'
             ],
             [
                 'name' => 'Camping Tent',
@@ -137,7 +137,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 149.99,
                 'stock' => 8,
                 'category_id' => $sportsId,
-                'product_image' => 'products/tent.jpg'
+                'image' => 'products/tent.jpg'
             ],
             [
                 'name' => 'Dumbbell Set',
@@ -145,7 +145,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 199.99,
                 'stock' => 12,
                 'category_id' => $sportsId,
-                'product_image' => 'products/dumbbells.jpg'
+                'image' => 'products/dumbbells.jpg'
             ],
             [
                 'name' => 'Bicycle',
@@ -153,7 +153,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => 399.99,
                 'stock' => 5,
                 'category_id' => $sportsId,
-                'product_image' => 'products/bicycle.jpg'
+                'image' => 'products/bicycle.jpg'
             ],
         ];
         

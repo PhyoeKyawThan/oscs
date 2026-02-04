@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
@@ -11,6 +12,7 @@ use App\Http\Middleware\AuthCustomer;
 use App\Http\Middleware\GuestCustomer;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Admin;
 
 
 Route::middleware(GuestCustomer::class)->group(function () {
@@ -50,6 +52,7 @@ Route::middleware(AuthCustomer::class)->group(function () {
 
     // Order listing and management
     Route::get('/orders', [OrderController::class, 'index'])->name('customer.orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/history', [OrderController::class, 'getOrderHistory'])->name('customer.orders.history');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('customer.orders.show');
     Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('customer.orders.cancel');
@@ -58,4 +61,68 @@ Route::middleware(AuthCustomer::class)->group(function () {
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('customer.orders.invoice');
     Route::get('/orders/stats', [OrderController::class, 'getOrderStats'])->name('customer.orders.stats');
     Route::get('/orders/{orderNumber}/invoice/download', [OrderController::class, 'invoice'])->name('customer.orders.invoice.download');
+});
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Authentication Routes
+    Route::get('login', [Admin\AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [Admin\AuthController::class, 'login']);
+    Route::post('logout', [Admin\AuthController::class, 'logout'])->name('logout');
+    
+    // Protected Admin Routes
+    Route::middleware(['auth:admin'])->group(function () {
+        // Dashboard
+        Route::get('dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Profile
+        Route::get('profile', [Admin\AuthController::class, 'profile'])->name('profile');
+        Route::put('profile', [Admin\AuthController::class, 'updateProfile']);
+        
+        // Orders
+        Route::resource('orders', Admin\OrderController::class)->except(['create', 'store']);
+        Route::post('orders/{order}/status', [Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
+        Route::get('orders/{order}/invoice', [Admin\OrderController::class, 'invoice'])->name('orders.invoice');
+        
+        // Products
+        Route::resource('products', Admin\ProductController::class);
+        Route::post('products/bulk', [Admin\ProductController::class, 'bulkUpdate'])->name('products.bulk');
+        
+        // Categories
+        Route::resource('categories', Admin\CategoryController::class);
+        
+        // Customers
+        Route::resource('customers', Admin\CustomerController::class);
+        Route::get('customers/{customer}/orders', [Admin\CustomerController::class, 'getCustomerOrders'])->name('customers.orders');
+        
+        // Settings
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('general', [Admin\SettingsController::class, 'general'])->name('general');
+            Route::put('general', [Admin\SettingsController::class, 'updateGeneral']);
+            
+            Route::get('payment', [Admin\SettingsController::class, 'payment'])->name('payment');
+            Route::put('payment', [Admin\SettingsController::class, 'updatePayment']);
+            
+            Route::get('shipping', [Admin\SettingsController::class, 'shipping'])->name('shipping');
+            Route::put('shipping', [Admin\SettingsController::class, 'updateShipping']);
+            
+            Route::get('notifications', [Admin\SettingsController::class, 'notifications'])->name('notifications');
+            Route::put('notifications', [Admin\SettingsController::class, 'updateNotifications']);
+        });
+    });
+});
+Route::prefix('admin/settings')->name('admin.settings.')->group(function () {
+    Route::get('/', [SettingsController::class, 'general'])->name('index');
+    Route::put('/general', [SettingsController::class, 'updateGeneral'])->name('general.update');
+    Route::get('/payment', [SettingsController::class, 'payment'])->name('payment');
+    Route::put('/payment', [SettingsController::class, 'updatePayment'])->name('payment.update');
+    Route::get('/shipping', [SettingsController::class, 'shipping'])->name('shipping');
+    Route::put('/shipping', [SettingsController::class, 'updateShipping'])->name('shipping.update');
+    Route::get('/notifications', [SettingsController::class, 'notifications'])->name('notifications');
+    Route::put('/notifications', [SettingsController::class, 'updateNotifications'])->name('notifications.update');
+    Route::get('/social', [SettingsController::class, 'social'])->name('social');
+    Route::put('/social', [SettingsController::class, 'updateSocial'])->name('social.update');
+    Route::post('/clear-cache', [SettingsController::class, 'clearCache'])->name('clear-cache');
+    Route::get('/backup', [SettingsController::class, 'backup'])->name('backup');
+    Route::post('/reset', [SettingsController::class, 'reset'])->name('reset');
 });

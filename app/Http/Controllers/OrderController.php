@@ -245,4 +245,77 @@ class OrderController extends Controller
 
         return 'Delivered';
     }
+
+    public function store(Request $request)
+    {
+        // 1. Validation
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'postal_code' => 'required',
+            'delivery_method' => 'required',
+        ]);
+
+        // 2. Get Cart Data (Assuming it's stored in Session)
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return response()->json(['success' => false, 'message' => 'Cart is empty'], 400);
+        }
+
+        try {
+            return DB::transaction(function () use ($request, $cart) {
+                // Calculate Totals (Don't trust frontend totals, recalculate here)
+                $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+                $shipping = $request->delivery_method === 'pickup' ? 0 : ($request->delivery_method === 'express' ? 12.99 : 5.99);
+                $total = $subtotal + $shipping; // Add tax calculation if needed
+
+                // 3. Create Order
+                $order = Orders::create([
+                    'order_number' => 'ORD-' . strtoupper(uniqid()),
+                    'user_id' => Auth::id(),
+                    'status' => 'Pending',
+                    'total_amount' => $total,
+                    'delivery_information' => [
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'city' => $request->city,
+                        'state' => $request->state,
+                        'postal_code' => $request->postal_code,
+                        'method' => $request->delivery_method,
+                        'instructions' => $request->delivery_instructions
+                    ],
+                    'payment_method' => $request->payment_method ?? 'COD',
+                    'payment_status' => 'Pending'
+                ]);
+
+                // 4. Create Order Items
+                foreach ($cart as $id => $details) {
+                    OrderItems::create([
+                        'order_id' => $order->id,
+                        'product_id' => $id,
+                        'quantity' => $details['quantity'],
+                        'price' => $details['price']
+                    ]);
+                }
+
+                // 5. Clear Cart
+                session()->forget('cart');
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Order placed successfully!',
+                    'order_number' => $order->order_number,
+                    'redirect' => route('customer.orders.show', $order->order_number)
+                ]);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }

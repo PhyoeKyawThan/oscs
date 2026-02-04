@@ -12,4 +12,7 @@ class Categories extends Model
         'slug',
     ];
     
+    public function products(){
+        return $this->hasMany(Products::class, 'category_id');
+    }
 }

@@ -25,8 +25,12 @@ export default class CartManager {
                 e.preventDefault();
                 const button = e.target.closest('.add-to-cart');
                 const productId = button.dataset.productId;
+                let quantity = 1;
+                if(document.getElementById("quantity")){
+                    quantity = document.getElementById("quantity").value;
+                }
                 if (productId && !button.disabled) {
-                    this.addToCart(productId);
+                    this.addToCart(productId, quantity);
                 }
             }
         });
