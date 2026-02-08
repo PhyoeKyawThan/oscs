@@ -62,7 +62,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:Pending,Processing,Shipped,Delivered,Completed,Cancelled',
+            'status' => 'required|in:Pending,Confirmed,Shipping,Completed,Cancelled',
             'notes' => 'nullable|string|max:500'
         ]);
 
@@ -70,17 +70,16 @@ class OrderController extends Controller
 
         // Update status
         $order->status = $request->status;
-        
         // Add status history
-        $statusHistory = $order->status_history ?? [];
-        $statusHistory[] = [
-            'status' => $request->status,
-            'notes' => $request->notes,
-            'changed_at' => now()->toDateTimeString(),
-            'changed_by' => auth('admin')->user()->name
-        ];
+        // $statusHistory = $order->status_history ?? [];
+        // $statusHistory[] = [
+        //     'status' => $request->status,
+        //     'notes' => $request->notes,
+        //     'changed_at' => now()->toDateTimeString(),
+        //     'changed_by' => auth('admin')->user()->name
+        // ];
         
-        $order->status_history = $statusHistory;
+        // $order->status_history = $statusHistory;
         $order->save();
 
         // Here you can add notification logic (email to customer, etc.)

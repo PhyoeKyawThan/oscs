@@ -51,7 +51,7 @@ class OrderSeeder extends Seeder
         ];
         
         // Status options
-        $statuses = ['Pending', 'On Delivery', 'Completed', 'Cancelled'];
+        $statuses = ['Pending', 'Confirmed', 'Shipping', 'Completed', 'Cancelled'];
         
         // Create 50 orders
         for ($i = 1; $i <= 50; $i++) {
