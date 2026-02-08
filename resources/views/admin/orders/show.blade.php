@@ -79,9 +79,9 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>${{ number_format($item->price, 2) }}</td>
+                                        <td>{{ number_format($item->product->price, 2) }} MMKS</td>
                                         <td>{{ $item->quantity }}</td>
-                                        <td>${{ number_format($item->price * $item->quantity, 2) }}</td>
+                                        <td>{{ number_format($item->product->price * $item->quantity, 2) }} MMKS</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -101,15 +101,15 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="col-lg-6">
+                        <div class="">
                             <div class="card border">
                                 <div class="card-body">
                                     <h6 class="mb-3">Order Summary</h6>
-                                    <div class="d-flex justify-content-between mb-2">
+                                    {{-- <div class="d-flex justify-content-between mb-2">
                                         <span>Subtotal</span>
-                                        <span>${{ number_format($order->items->sum(function ($item) {
-        return $item->price * $item->quantity; }), 2) }}</span>
-                                    </div>
+                                        <span>{{ number_format($order->items->sum(function ($item) {
+        return $item->product->price * $item->quantity; }), 2) }}</span>
+                                    </div> --}}
                                     @php
                                         $deliveryInfo = is_array($order->delivery_information)
                                             ? $order->delivery_information
@@ -117,21 +117,42 @@
                                         $shipping = $deliveryInfo['method'] ?? '';
                                         $shippingCost = 0;
                                         if ($shipping == 'express') {
-                                            $shippingCost = 12.99;
+                                            $shippingCost = 4000.00;
                                         } elseif ($shipping == 'standard') {
-                                            $shippingCost = 5.99;
+                                            $shippingCost = 3000.00;
                                         }
                                     @endphp
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Shipping</span>
-                                        <span>${{ number_format($shippingCost, 2) }}</span>
+                                        <span>{{ number_format($shippingCost, 2) }} MMKS</span>
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between fw-bold">
                                         <span>Total</span>
-                                        <span>${{ number_format($order->total_amount, 2) }}</span>
+                                        <span>{{ number_format($order->total_amount + $shippingCost, 2) }} MMKS</span>
                                     </div>
                                 </div>
+                                <hr>
+                                <div class="d-flex flex-column justify-content-center align-items-center px-2">
+                                    <h4 class="align-self-start">Payment Proof</h4>
+                                    <img class="w-75 rounded" src="{{ asset('storage/' . $order->payment_proof) }}" alt=""
+                                        srcset="">
+                                </div>
+                                <form method="POST" action="{{ route('admin.orders.update-payment-status', $order->id) }}"
+                                    class="d-flex gap-2 p-4 align-items-end justify-content-end">
+                                    @csrf
+                                    <select name="payment_status" class="form-select form-select-sm" style="width: 200px;">
+                                        <option value="Pending" {{ $order->payment_status == 'Pending' ? 'selected' : '' }}>
+                                            Pending</option>
+                                        <option value="Paid" {{ $order->payment_status == 'Paid' ? 'selected' : '' }}>Paid
+                                        </option>
+                                        <option value="Failed" {{ $order->payment_status == 'Failed' ? 'selected' : '' }}>
+                                            Failed</option>
+                                        <option value="Refunded" {{ $order->payment_status == 'Refunded' ? 'selected' : '' }}>
+                                            Refunded</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary">Update Status</button>
+                                </form>
                             </div>
                         </div>
                     </div>

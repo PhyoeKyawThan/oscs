@@ -82,6 +82,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Orders
         Route::resource('orders', Admin\OrderController::class)->except(['create', 'store']);
         Route::post('orders/{order}/status', [Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
+        Route::post('orders/{order}/payment_status', [Admin\OrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
         Route::get('orders/{order}/invoice', [Admin\OrderController::class, 'invoice'])->name('orders.invoice');
         
         // Products

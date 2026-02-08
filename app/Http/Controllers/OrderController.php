@@ -272,7 +272,11 @@ class OrderController extends Controller
                 $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
                 $shipping = $request->delivery_method === 'pickup' ? 0 : ($request->delivery_method === 'express' ? 12.99 : 5.99);
                 $total = $subtotal + $shipping; // Add tax calculation if needed
-
+                
+                if ($request->hasFile('payment_proof')) {
+                    $path = $request->file('payment_proof')->store('payments', 'public');
+                }
+                // dd($path);
                 // 3. Create Order
                 $order = Orders::create([
                     'order_number' => 'ORD-' . strtoupper(uniqid()),
@@ -291,7 +295,8 @@ class OrderController extends Controller
                         'instructions' => $request->delivery_instructions
                     ],
                     'payment_method' => $request->payment_method ?? 'COD',
-                    'payment_status' => 'Pending'
+                    'payment_status' => 'Pending',
+                    'payment_proof' => $path,
                 ]);
 
                 // 4. Create Order Items

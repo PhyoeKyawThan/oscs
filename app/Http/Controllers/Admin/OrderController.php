@@ -55,8 +55,24 @@ class OrderController extends Controller
             ->findOrFail($id);
 
         $deliveryInfo = $order->delivery_information;
-
         return view('admin.orders.show', compact('order', 'deliveryInfo'));
+    }
+
+   public function updatePaymentStatus(Request $request, $id)
+    {
+        $request->validate([
+            'payment_status' => 'required',
+            // 'notes' => 'nullable|string|max:500'
+        ]);
+
+        $order = Orders::findOrFail($id);
+
+        // Update status
+        $order->payment_status = $request->payment_status;
+        $order->save();
+
+
+        return redirect()->back()->with('success', 'Order Payment status updated successfully.');
     }
 
     public function updateStatus(Request $request, $id)
