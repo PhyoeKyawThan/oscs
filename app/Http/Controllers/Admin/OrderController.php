@@ -43,7 +43,7 @@ class OrderController extends Controller
         }
 
         $orders = $query->orderBy('created_at', 'desc')
-            ->paginate(20)
+            ->paginate(10)
             ->withQueryString();
 
         return view('admin.orders.index', compact('orders'));

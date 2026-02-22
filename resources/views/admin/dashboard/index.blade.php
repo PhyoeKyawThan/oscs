@@ -3,282 +3,231 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="row">
-        <!-- Statistics Cards -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted fw-normal">Total Orders</h6>
-                            <h3 class="fw-bold mb-0">{{ $stats['total_orders'] }}</h3>
-                            <small class="text-success">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                This month
-                            </small>
-                        </div>
-                        <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                            <i class="fas fa-shopping-bag"></i>
-                        </div>
-                    </div>
-                </div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+
+    <!-- Total Orders -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex justify-between">
+            <div>
+                <h6 class="text-gray-500 text-sm">Total Orders</h6>
+                <h3 class="text-2xl font-bold">{{ $stats['total_orders'] }}</h3>
+                <p class="text-green-600 text-sm mt-1">
+                    <i class="fas fa-arrow-up mr-1"></i> This month
+                </p>
+            </div>
+            <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                <i class="fas fa-shopping-bag"></i>
             </div>
         </div>
+    </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted fw-normal">Total Revenue</h6>
-                            <h3 class="fw-bold mb-0">${{ number_format($stats['total_revenue'], 2) }}</h3>
-                            <small class="text-success">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                {{ $stats['total_revenue'] > 0 ? '10.5%' : '0%' }}
-                            </small>
-                        </div>
-                        <div class="stat-icon bg-success bg-opacity-10 text-success">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                    </div>
-                </div>
+    <!-- Total Revenue -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex justify-between">
+            <div>
+                <h6 class="text-gray-500 text-sm">Total Revenue</h6>
+                <h3 class="text-2xl font-bold">
+                    ${{ number_format($stats['total_revenue'], 2) }}
+                </h3>
+                <p class="text-green-600 text-sm mt-1">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    {{ $stats['total_revenue'] > 0 ? '10.5%' : '0%' }}
+                </p>
+            </div>
+            <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-green-100 text-green-600">
+                <i class="fas fa-dollar-sign"></i>
             </div>
         </div>
+    </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted fw-normal">Total Products</h6>
-                            <h3 class="fw-bold mb-0">{{ $stats['total_products'] }}</h3>
-                            <small class="text-danger">
-                                <i class="fas fa-exclamation-circle me-1"></i>
-                                {{ $stats['low_stock_products'] }} low stock
-                            </small>
-                        </div>
-                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
-                            <i class="fas fa-box"></i>
-                        </div>
-                    </div>
-                </div>
+    <!-- Total Products -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex justify-between">
+            <div>
+                <h6 class="text-gray-500 text-sm">Total Products</h6>
+                <h3 class="text-2xl font-bold">{{ $stats['total_products'] }}</h3>
+                <p class="text-red-600 text-sm mt-1">
+                    <i class="fas fa-exclamation-circle mr-1"></i>
+                    {{ $stats['low_stock_products'] }} low stock
+                </p>
+            </div>
+            <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-yellow-100 text-yellow-600">
+                <i class="fas fa-box"></i>
             </div>
         </div>
+    </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted fw-normal">Total Customers</h6>
-                            <h3 class="fw-bold mb-0">{{ $stats['total_customers'] }}</h3>
-                            <small class="text-success">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                New this month
-                            </small>
-                        </div>
-                        <div class="stat-icon bg-info bg-opacity-10 text-info">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
+    <!-- Total Customers -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex justify-between">
+            <div>
+                <h6 class="text-gray-500 text-sm">Total Customers</h6>
+                <h3 class="text-2xl font-bold">{{ $stats['total_customers'] }}</h3>
+                <p class="text-green-600 text-sm mt-1">
+                    <i class="fas fa-arrow-up mr-1"></i> New this month
+                </p>
+            </div>
+            <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Charts Section -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+
+    <!-- Revenue Chart -->
+    <div class="xl:col-span-2 bg-white rounded-2xl shadow">
+        <div class="flex justify-between items-center p-6 border-b">
+            <h6 class="font-semibold">Revenue Overview (Last 30 Days)</h6>
+        </div>
+        <div class="p-6">
+            <canvas id="revenueChart" height="250"></canvas>
+        </div>
+    </div>
+
+    <!-- Order Status -->
+    <div class="bg-white rounded-2xl shadow">
+        <div class="p-6 border-b">
+            <h6 class="font-semibold">Order Status</h6>
+        </div>
+        <div class="p-6">
+            <canvas id="orderStatusChart" height="250"></canvas>
+
+            <div class="mt-4 space-y-2">
+                <div class="flex justify-between">
+                    <span>Pending</span>
+                    <span class="font-bold">{{ $stats['pending_orders'] }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Processing</span>
+                    <span class="font-bold">{{ \App\Models\Orders::where('status', 'Processing')->count() }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Completed</span>
+                    <span class="font-bold">{{ \App\Models\Orders::where('status', 'Completed')->count() }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Cancelled</span>
+                    <span class="font-bold">{{ \App\Models\Orders::where('status', 'Cancelled')->count() }}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <!-- Revenue Chart -->
-        <div class="col-xl-8 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Revenue Overview (Last 30 Days)</h6>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Last 30 Days
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Last 7 Days</a></li>
-                            <li><a class="dropdown-item" href="#">Last 30 Days</a></li>
-                            <li><a class="dropdown-item" href="#">Last 90 Days</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <canvas id="revenueChart" height="250"></canvas>
-                </div>
-            </div>
-        </div>
+</div>
 
-        <!-- Order Status -->
-        <div class="col-xl-4 mb-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h6 class="mb-0">Order Status</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="orderStatusChart" height="250"></canvas>
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Pending</span>
-                            <span class="fw-bold">{{ $stats['pending_orders'] }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Processing</span>
-                            <span class="fw-bold">{{ \App\Models\Orders::where('status', 'Processing')->count() }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Completed</span>
-                            <span class="fw-bold">{{ \App\Models\Orders::where('status', 'Completed')->count() }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>Cancelled</span>
-                            <span class="fw-bold">{{ \App\Models\Orders::where('status', 'Cancelled')->count() }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<!-- Recent Orders -->
+<div class="bg-white rounded-2xl shadow mb-6">
+    <div class="flex justify-between items-center p-6 border-b">
+        <h6 class="font-semibold">Recent Orders</h6>
+        <a href="{{ route('admin.orders.index') }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">
+            View All
+        </a>
     </div>
 
-    <div class="row">
-        <!-- Recent Orders -->
-        <div class="mb-4">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Recent Orders</h6>
-                    <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-primary">View All</a>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer</th>
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($recentOrders as $order)
-                                    <tr>
-                                        <td>
-                                            <a href="{{ route('admin.orders.show', $order->id) }}" class="fw-bold">
-                                                #{{ $order->order_number }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            @if($order->user)
-                                                {{ $order->user->name }}
-                                            @else
-                                                Guest
-                                            @endif
-                                        </td>
-                                        <td>{{ $order->created_at->format('M d, Y') }}</td>
-                                        <td>{{ number_format($order->total_amount, 2) }} MMKS</td>
-                                        <td>
-                                            @php
-                                                $statusColors = [
-                                                    'Pending' => 'warning',
-                                                    'Processing' => 'info',
-                                                    'Shipped' => 'primary',
-                                                    'Delivered' => 'success',
-                                                    'Completed' => 'success',
-                                                    'Cancelled' => 'danger'
-                                                ];
-                                            @endphp
-                                            <span class="badge bg-{{ $statusColors[$order->status] ?? 'secondary' }}">
-                                                {{ $order->status }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-light">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+                <tr>
+                    <th class="px-6 py-3">Order ID</th>
+                    <th class="px-6 py-3">Customer</th>
+                    <th class="px-6 py-3">Date</th>
+                    <th class="px-6 py-3">Amount</th>
+                    <th class="px-6 py-3">Status</th>
+                    <th class="px-6 py-3">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+
+                @foreach($recentOrders as $order)
+                @php
+                    $statusColors = [
+                        'Pending' => 'bg-yellow-100 text-yellow-700',
+                        'Processing' => 'bg-cyan-100 text-cyan-700',
+                        'Shipped' => 'bg-blue-100 text-blue-700',
+                        'Delivered' => 'bg-green-100 text-green-700',
+                        'Completed' => 'bg-green-100 text-green-700',
+                        'Cancelled' => 'bg-red-100 text-red-700'
+                    ];
+                @endphp
+
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 font-semibold">
+                        <a href="{{ route('admin.orders.show', $order->id) }}">
+                            #{{ $order->order_number }}
+                        </a>
+                    </td>
+
+                    <td class="px-6 py-4">
+                        {{ $order->user->name ?? 'Guest' }}
+                    </td>
+
+                    <td class="px-6 py-4">
+                        {{ $order->created_at->format('M d, Y') }}
+                    </td>
+
+                    <td class="px-6 py-4">
+                        {{ number_format($order->total_amount, 2) }} MMKS
+                    </td>
+
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColors[$order->status] ?? 'bg-gray-100 text-gray-600' }}">
+                            {{ $order->status }}
+                        </span>
+                    </td>
+
+                    <td class="px-6 py-4">
+                        <a href="{{ route('admin.orders.show', $order->id) }}"
+                           class="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+
+                @endforeach
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Quick Stats -->
+<div class="bg-white rounded-2xl shadow p-6">
+    <h6 class="font-semibold mb-4">Quick Stats</h6>
+
+    <div class="grid grid-cols-2 gap-4 text-center">
+        <div class="p-4 bg-gray-100 rounded-xl">
+            <h4 class="text-xl font-bold">{{ $stats['pending_orders'] }}</h4>
+            <p class="text-gray-500 text-sm">Pending Orders</p>
         </div>
 
-        <!-- Top Products -->
-        {{-- <div class="col-xl-4 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">Top Selling Products</h6>
-                </div>
-                <div class="card-body">
-                    @foreach($topProducts as $product)
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="flex-shrink-0">
-                            <div class="bg-light rounded p-2">
-                                <i class="fas fa-box text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">{{ $product->name }}</h6>
-                            <small class="text-muted">{{ $product->total_sold }} sold</small>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <span class="fw-bold">{{ $product->price ?? 'N/A' }}MMKS</span>
-                        </div>
-                    </div>
-                    @endforeach
+        <div class="p-4 bg-gray-100 rounded-xl">
+            <h4 class="text-xl font-bold">{{ $stats['low_stock_products'] }}</h4>
+            <p class="text-gray-500 text-sm">Low Stock</p>
+        </div>
 
-                    @if($topProducts->isEmpty())
-                    <div class="text-center py-4">
-                        <i class="fas fa-chart-bar fa-2x text-muted mb-2"></i>
-                        <p class="mb-0">No sales data available</p>
-                    </div>
-                    @endif
-                </div>
-            </div> --}}
+        <div class="p-4 bg-gray-100 rounded-xl">
+            <h4 class="text-xl font-bold">{{ $stats['total_categories'] }}</h4>
+            <p class="text-gray-500 text-sm">Categories</p>
+        </div>
 
-            <!-- Quick Stats -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h6 class="mb-0">Quick Stats</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-6 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <h4 class="mb-0">{{ $stats['pending_orders'] }}</h4>
-                                <small class="text-muted">Pending Orders</small>
-                            </div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <h4 class="mb-0">{{ $stats['low_stock_products'] }}</h4>
-                                <small class="text-muted">Low Stock</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded">
-                                <h4 class="mb-0">{{ $stats['total_categories'] }}</h4>
-                                <small class="text-muted">Categories</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded">
-                                @php
-                                    $avgOrderValue = $stats['total_revenue'] / max($stats['total_orders'], 1);
-                                @endphp
-                                <h4 class="mb-0">${{ number_format($avgOrderValue, 2) }}</h4>
-                                <small class="text-muted">Avg. Order Value</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        @php
+            $avgOrderValue = $stats['total_revenue'] / max($stats['total_orders'], 1);
+        @endphp
+
+        <div class="p-4 bg-gray-100 rounded-xl">
+            <h4 class="text-xl font-bold">${{ number_format($avgOrderValue, 2) }}</h4>
+            <p class="text-gray-500 text-sm">Avg. Order Value</p>
         </div>
     </div>
+</div>
 @endsection
 
 @push('scripts')

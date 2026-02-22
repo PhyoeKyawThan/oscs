@@ -6,16 +6,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Dashboard') - {{ config('app.name') }}</title>
     
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <!-- Tailwind CSS -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <!-- Custom CSS -->
     <style>
         :root {
@@ -27,13 +26,13 @@
             --info-color: #43aa8b;
             --light-color: #f8f9fa;
             --dark-color: #212529;
-            --sidebar-width: 250px;
+            --sidebar-width: 280px;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f7fb;
-            overflow-x: hidden;
+            /* REMOVED overflow-x: hidden */
         }
         
         .sidebar {
@@ -49,7 +48,7 @@
         }
         
         .sidebar.collapsed {
-            width: 70px;
+            width: 80px;
         }
         
         .main-content {
@@ -57,109 +56,30 @@
             transition: all 0.3s;
             min-height: 100vh;
             padding-bottom: 60px;
+            /* ADDED: proper width calculation */
+            width: calc(100% - var(--sidebar-width));
         }
         
         .main-content.expanded {
-            margin-left: 70px;
-        }
-        
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 999;
-        }
-        
-        .card {
-            border: none;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            border-radius: 12px;
-            transition: transform 0.3s;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-        }
-        
-        .stat-card {
-            border-left: 4px solid var(--primary-color);
-        }
-        
-        .stat-card .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        
-        .badge {
-            padding: 6px 12px;
-            font-weight: 500;
-        }
-        
-        .btn {
-            border-radius: 8px;
-            padding: 8px 20px;
-            font-weight: 500;
-        }
-        
-        .table th {
-            border-top: none;
-            font-weight: 600;
-            color: var(--dark-color);
-            border-bottom: 2px solid #dee2e6;
-        }
-        
-        .table td {
-            vertical-align: middle;
-        }
-        
-        .pagination .page-link {
-            border-radius: 6px;
-            margin: 0 3px;
-        }
-        
-        .alert {
-            border: none;
-            border-radius: 10px;
-        }
-        
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #e1e5eb;
-            padding: 10px 15px;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
-        }
-        
-        .nav-tabs .nav-link {
-            border-radius: 8px 8px 0 0;
-            font-weight: 500;
-        }
-        
-        .nav-tabs .nav-link.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+            margin-left: 80px;
+            width: calc(100% - 80px);
         }
         
         .footer {
             position: fixed;
             bottom: 0;
-            width: 100%;
+            /* CHANGED: better footer positioning */
+            left: var(--sidebar-width);
+            right: 0;
             background: white;
             border-top: 1px solid #e1e5eb;
             padding: 15px 0;
-            margin-left: var(--sidebar-width);
             transition: all 0.3s;
+            z-index: 999;
         }
         
         .footer.expanded {
-            margin-left: 70px;
+            left: 80px;
         }
         
         .toggle-sidebar {
@@ -170,24 +90,6 @@
             cursor: pointer;
         }
         
-        .dropdown-menu {
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            border: none;
-        }
-        
-        .dropdown-item {
-            padding: 8px 20px;
-            border-radius: 6px;
-            margin: 2px 10px;
-            width: auto;
-        }
-        
-        .dropdown-item:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
         .avatar {
             width: 40px;
             height: 40px;
@@ -195,56 +97,102 @@
             object-fit: cover;
         }
         
+        /* Custom select2 styles for Tailwind */
+        .select2-container--default .select2-selection--single {
+            height: 42px !important;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 0.5rem !important;
+            padding: 0.5rem !important;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 28px !important;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+        }
+        
+        /* DataTables Tailwind overrides */
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #e5e7eb !important;
+            border-radius: 0.5rem !important;
+            padding: 0.5rem !important;
+        }
+        
+        .dataTables_wrapper .dataTables_length select:focus,
+        .dataTables_wrapper .dataTables_filter input:focus {
+            outline: none !important;
+            ring: 2px !important;
+            border-color: var(--primary-color) !important;
+        }
+        
+        /* ADDED: Responsive table container */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         @media (max-width: 768px) {
             .sidebar {
-                margin-left: -250px;
+                margin-left: -280px;
             }
             
             .sidebar.collapsed {
                 margin-left: 0;
-                width: 250px;
+                width: 280px;
             }
             
             .main-content {
                 margin-left: 0;
+                width: 100%;
             }
             
             .footer {
-                margin-left: 0;
+                left: 0;
             }
             
-            .navbar-toggler {
-                order: -1;
+            .main-content.expanded {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .footer.expanded {
+                left: 0;
             }
         }
     </style>
     @stack('styles')
 </head>
-<body>
-    <div class="d-flex">
+<body class="antialiased">
+    <div class="flex">
         <!-- Sidebar -->
         @include('admin.layouts.sidebar')
         
         <!-- Main Content -->
-        <div class="main-content w-100" id="mainContent">
+        <div class="main-content" id="mainContent">
             <!-- Header -->
             @include('admin.layouts.header')
             
             <!-- Page Content -->
-            <div class="container-fluid p-4">
+            <div class="px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Page Title -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="sm:flex sm:items-center sm:justify-between mb-8">
                     <div>
-                        <h3 class="mb-1 fw-bold">@yield('title')</h3>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-1">@yield('title')</h3>
+                        <nav class="flex" aria-label="Breadcrumb">
+                            <ol class="inline-flex items-center space-x-2 text-sm">
+                                <li class="inline-flex items-center">
+                                    <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-blue-600 transition-colors">Dashboard</a>
+                                </li>
                                 @yield('breadcrumb')
                             </ol>
                         </nav>
                     </div>
                     @hasSection('actions')
-                        <div class="d-flex gap-2">
+                        <div class="mt-4 sm:mt-0 flex gap-2">
                             @yield('actions')
                         </div>
                     @endif
@@ -252,36 +200,52 @@
                 
                 <!-- Alerts -->
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="mb-4 bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg" role="alert">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <p class="text-sm text-green-700">{{ session('success') }}</p>
+                            <button type="button" class="ml-auto text-green-400 hover:text-green-600" onclick="this.closest('div[role=alert]').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 @endif
                 
                 @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg" role="alert">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-red-400 mr-2"></i>
+                            <p class="text-sm text-red-700">{{ session('error') }}</p>
+                            <button type="button" class="ml-auto text-red-400 hover:text-red-600" onclick="this.closest('div[role=alert]').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 @endif
                 
                 @if($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Please fix the following errors:
-                        <ul class="mb-0 mt-2">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg" role="alert">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-red-400 mr-2 mt-1"></i>
+                            <div>
+                                <p class="text-sm text-red-700 font-medium">Please fix the following errors:</p>
+                                <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <button type="button" class="ml-auto text-red-400 hover:text-red-600" onclick="this.closest('div[role=alert]').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 @endif
                 
                 <!-- Main Content -->
-                @yield('content')
+                <main>
+                    @yield('content')
+                </main>
             </div>
             
             <!-- Footer -->
@@ -291,11 +255,13 @@
     
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Alpine.js (if you're using it) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <!-- Custom Scripts -->
     <script>
@@ -312,6 +278,9 @@
             // Save state to localStorage
             const isCollapsed = sidebar.classList.contains('collapsed');
             localStorage.setItem('sidebarCollapsed', isCollapsed);
+            
+            // Trigger resize event for DataTables
+            window.dispatchEvent(new Event('resize'));
         }
         
         // Load sidebar state
@@ -327,30 +296,30 @@
                 footer.classList.add('expanded');
             }
             
-            // Initialize tooltips
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-            
             // Initialize Select2
-            $('.select2').select2({
-                theme: 'bootstrap-5'
-            });
+            if (typeof $ !== 'undefined') {
+                $('.select2').select2({
+                    theme: 'classic',
+                    width: '100%'
+                });
+            }
             
-            // Initialize DataTables
-            $('.data-table').DataTable({
-                pageLength: 25,
-                responsive: true,
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Search...",
-                    lengthMenu: "_MENU_ records per page",
-                    info: "Showing _START_ to _END_ of _TOTAL_ records",
-                    infoEmpty: "No records available",
-                    infoFiltered: "(filtered from _MAX_ total records)"
-                }
-            });
+            // Initialize DataTables with responsive option
+            if (typeof $.fn.DataTable !== 'undefined') {
+                $('.data-table').DataTable({
+                    pageLength: 25,
+                    responsive: true,
+                    scrollX: true, // Enable horizontal scroll for DataTables
+                    language: {
+                        search: "",
+                        searchPlaceholder: "Search...",
+                        lengthMenu: "_MENU_ records per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ records",
+                        infoEmpty: "No records available",
+                        infoFiltered: "(filtered from _MAX_ total records)"
+                    }
+                });
+            }
         });
         
         // Confirm delete

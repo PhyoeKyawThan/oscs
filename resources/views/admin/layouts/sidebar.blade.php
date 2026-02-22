@@ -1,104 +1,204 @@
-<aside class="sidebar text-white">
-    <div class="sidebar-header p-4 border-bottom border-white border-opacity-25">
-        <div class="d-flex align-items-center justify-content-between">
-            <a href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-store fa-2x me-3"></i>
-                    <div>
-                        <h4 class="fw-bold mb-0">{{ config('app.name') }}</h4>
-                        <small class="text-white text-opacity-75">Admin Panel</small>
+<aside class="sidebar text-white h-screen fixed top-0 left-0 z-[1000] transition-all duration-300" 
+       :class="{ 'collapsed': sidebarCollapsed }" 
+       x-data="{ sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true' }">
+    
+    <!-- Sidebar Header -->
+    <div class="px-4 py-5 border-b border-white/25">
+        <div class="flex items-center justify-between">
+            <a href="{{ route('admin.dashboard') }}" class="text-white no-underline">
+                <div class="flex items-center">
+                    <i class="fas fa-store fa-2x mr-3"></i>
+                    <div x-show="!sidebarCollapsed" x-transition>
+                        <h4 class="font-bold text-xl mb-0">{{ config('app.name') }}</h4>
+                        <small class="text-white/75">Admin Panel</small>
                     </div>
                 </div>
             </a>
-            <button class="toggle-sidebar d-none d-lg-block" onclick="toggleSidebar()">
+            <button class="toggle-sidebar hidden lg:block bg-transparent border-0 text-white text-xl cursor-pointer" 
+                    @click="sidebarCollapsed = !sidebarCollapsed; localStorage.setItem('sidebarCollapsed', sidebarCollapsed)">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </div>
     
-    <div class="sidebar-content p-3">
-        <div class="mb-4">
-            <small class="text-white text-opacity-50 fw-bold text-uppercase">Main</small>
-            <ul class="nav flex-column">
+    <!-- Sidebar Content -->
+    <div class="p-3 h-[calc(100vh-80px)] overflow-y-auto">
+        <!-- Main Menu -->
+        <div class="mb-6">
+            <small class="text-white/50 font-bold uppercase tracking-wider block px-3 mb-2" 
+                   x-show="!sidebarCollapsed">Main</small>
+            <ul class="space-y-1">
                 <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link text-white py-3 rounded {{ request()->routeIs('admin.dashboard') ? 'bg-white bg-opacity-25' : '' }}">
-                        <i class="fas fa-tachometer-alt me-3"></i>
-                        <span class="sidebar-text">Dashboard</span>
+                    <a href="{{ route('admin.dashboard') }}" 
+                       class="flex items-center px-3 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-white/25' : 'hover:bg-white/10' }}">
+                        <i class="fas fa-tachometer-alt w-6"></i>
+                        <span class="sidebar-text ml-3" x-show="!sidebarCollapsed">Dashboard</span>
                     </a>
                 </li>
             </ul>
         </div>
         
-        <div class="mb-4">
-            <small class="text-white text-opacity-50 fw-bold text-uppercase">Management</small>
-            <ul class="nav flex-column">
+        <!-- Management Menu -->
+        <div class="mb-6">
+            <small class="text-white/50 font-bold uppercase tracking-wider block px-3 mb-2" 
+                   x-show="!sidebarCollapsed">Management</small>
+            <ul class="space-y-1">
                 <li class="nav-item">
-                    <a href="{{ route('admin.orders.index') }}" class="nav-link text-white py-3 rounded {{ request()->routeIs('admin.orders.*') ? 'bg-white bg-opacity-25' : '' }}">
-                        <i class="fas fa-shopping-bag me-3"></i>
-                        <span class="sidebar-text">Orders</span>
+                    <a href="{{ route('admin.orders.index') }}" 
+                       class="flex items-center px-3 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.orders.*') ? 'bg-white/25' : 'hover:bg-white/10' }}">
+                        <i class="fas fa-shopping-bag w-6"></i>
+                        <span class="sidebar-text ml-3 flex-1" x-show="!sidebarCollapsed">Orders</span>
                         @php
                             $pendingOrders = \App\Models\Orders::where('status', 'Pending')->count();
                         @endphp
                         @if($pendingOrders > 0)
-                            <span class="badge bg-danger float-end">{{ $pendingOrders }}</span>
+                            <span class="bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-full ml-auto" 
+                                  x-show="!sidebarCollapsed">
+                                {{ $pendingOrders }}
+                            </span>
                         @endif
                     </a>
                 </li>
+                
                 <li class="nav-item">
-                    <a href="{{ route('admin.products.index') }}" class="nav-link text-white py-3 rounded {{ request()->routeIs('admin.products.*') ? 'bg-white bg-opacity-25' : '' }}">
-                        <i class="fas fa-box me-3"></i>
-                        <span class="sidebar-text">Products</span>
+                    <a href="{{ route('admin.products.index') }}" 
+                       class="flex items-center px-3 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.products.*') ? 'bg-white/25' : 'hover:bg-white/10' }}">
+                        <i class="fas fa-box w-6"></i>
+                        <span class="sidebar-text ml-3" x-show="!sidebarCollapsed">Products</span>
                     </a>
                 </li>
+                
                 <li class="nav-item">
-                    <a href="{{ route('admin.categories.index') }}" class="nav-link text-white py-3 rounded {{ request()->routeIs('admin.categories.*') ? 'bg-white bg-opacity-25' : '' }}">
-                        <i class="fas fa-tags me-3"></i>
-                        <span class="sidebar-text">Categories</span>
+                    <a href="{{ route('admin.categories.index') }}" 
+                       class="flex items-center px-3 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-white/25' : 'hover:bg-white/10' }}">
+                        <i class="fas fa-tags w-6"></i>
+                        <span class="sidebar-text ml-3" x-show="!sidebarCollapsed">Categories</span>
                     </a>
                 </li>
+                
                 <li class="nav-item">
-                    <a href="{{ route('admin.customers.index') }}" class="nav-link text-white py-3 rounded {{ request()->routeIs('admin.customers.*') ? 'bg-white bg-opacity-25' : '' }}">
-                        <i class="fas fa-users me-3"></i>
-                        <span class="sidebar-text">Customers</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        
-        <div class="mb-4">
-            <small class="text-white text-opacity-50 fw-bold text-uppercase">System</small>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings.general') }}" class="nav-link text-white py-3 rounded {{ request()->routeIs('admin.settings.*') ? 'bg-white bg-opacity-25' : '' }}">
-                        <i class="fas fa-cog me-3"></i>
-                        <span class="sidebar-text">Settings</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.profile') }}" class="nav-link text-white py-3 rounded {{ request()->routeIs('admin.profile') ? 'bg-white bg-opacity-25' : '' }}">
-                        <i class="fas fa-user me-3"></i>
-                        <span class="sidebar-text">Profile</span>
+                    <a href="{{ route('admin.customers.index') }}" 
+                       class="flex items-center px-3 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.customers.*') ? 'bg-white/25' : 'hover:bg-white/10' }}">
+                        <i class="fas fa-users w-6"></i>
+                        <span class="sidebar-text ml-3" x-show="!sidebarCollapsed">Customers</span>
                     </a>
                 </li>
             </ul>
         </div>
         
-        <div class="mt-auto p-3 border-top border-white border-opacity-25">
-            <div class="d-flex align-items-center">
+        <!-- System Menu -->
+        <div class="mb-6">
+            <small class="text-white/50 font-bold uppercase tracking-wider block px-3 mb-2" 
+                   x-show="!sidebarCollapsed">System</small>
+            <ul class="space-y-1">
+                <li class="nav-item">
+                    <a href="{{ route('admin.settings.general') }}" 
+                       class="flex items-center px-3 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.settings.*') ? 'bg-white/25' : 'hover:bg-white/10' }}">
+                        <i class="fas fa-cog w-6"></i>
+                        <span class="sidebar-text ml-3" x-show="!sidebarCollapsed">Settings</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.profile') }}" 
+                       class="flex items-center px-3 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.profile') ? 'bg-white/25' : 'hover:bg-white/10' }}">
+                        <i class="fas fa-user w-6"></i>
+                        <span class="sidebar-text ml-3" x-show="!sidebarCollapsed">Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- User Profile Section (Sticky at bottom) -->
+        <div class="absolute bottom-0 left-0 right-0 p-3 border-t border-white/25 bg-inherit">
+            <div class="flex items-center">
                 @if(auth('admin')->user()->avatar)
                     <img src="{{ asset('storage/' . auth('admin')->user()->avatar) }}" 
-                         class="avatar me-3" 
+                         class="w-10 h-10 rounded-full object-cover mr-3" 
                          alt="{{ auth('admin')->user()->name }}">
                 @else
-                    <div class="avatar bg-white bg-opacity-25 d-flex align-items-center justify-content-center me-3">
+                    <div class="w-10 h-10 rounded-full bg-white/25 flex items-center justify-center mr-3">
                         <i class="fas fa-user text-white"></i>
                     </div>
                 @endif
-                <div>
-                    <h6 class="mb-0">{{ auth('admin')->user()->name }}</h6>
-                    <small class="text-white text-opacity-75">{{ auth('admin')->user()->role }}</small>
+                <div x-show="!sidebarCollapsed" x-transition>
+                    <h6 class="text-sm font-semibold mb-0">{{ auth('admin')->user()->name }}</h6>
+                    <small class="text-white/75 text-xs">{{ auth('admin')->user()->role }}</small>
                 </div>
             </div>
         </div>
     </div>
 </aside>
+
+@push('styles')
+<style>
+    /* Custom scrollbar for sidebar */
+    .sidebar .overflow-y-auto::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    .sidebar .overflow-y-auto::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar .overflow-y-auto::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+    }
+    
+    .sidebar .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Sidebar collapsed state */
+    .sidebar.collapsed {
+        width: 80px !important;
+    }
+    
+    .sidebar.collapsed .sidebar-text {
+        display: none;
+    }
+    
+    .sidebar.collapsed .nav-link {
+        justify-content: center;
+        padding: 0.75rem;
+    }
+    
+    .sidebar.collapsed .nav-link i {
+        margin: 0;
+        width: auto;
+    }
+    
+    .sidebar.collapsed .badge {
+        display: none;
+    }
+    
+    .sidebar.collapsed .avatar {
+        margin-right: 0;
+    }
+    
+    .sidebar.collapsed .user-info {
+        display: none;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('sidebar', () => ({
+            sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
+            
+            toggleSidebar() {
+                this.sidebarCollapsed = !this.sidebarCollapsed;
+                localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
+                
+                // Dispatch event for main content to adjust
+                window.dispatchEvent(new CustomEvent('sidebar-toggle', { 
+                    detail: { collapsed: this.sidebarCollapsed } 
+                }));
+            }
+        }));
+    });
+</script>
+@endpush
