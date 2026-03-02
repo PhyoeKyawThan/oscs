@@ -135,13 +135,13 @@
                                     </div>
                                 </td>
                                 <td class="py-4 px-4 text-gray-700">
-                                    ₹{{ number_format($item->price, 2) }}
+                                    {{ number_format($item->product->price, 2) }} MMKS
                                 </td>
                                 <td class="py-4 px-4 text-gray-700">
                                     {{ $item->quantity }}
                                 </td>
                                 <td class="py-4 px-4 font-medium text-gray-900">
-                                    ₹{{ number_format($item->price * $item->quantity, 2) }}
+                                    {{ number_format($item->product->price * $item->quantity, 2) }} MMKS
                                 </td>
                             </tr>
                             @endforeach
@@ -157,14 +157,7 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Information</h3>
                     <div class="bg-gray-50 p-4 rounded-lg">
                         <div class="flex justify-between mb-2">
-                            <span class="text-gray-600">Payment Method:</span>
-                            <span class="font-medium text-gray-900">
-                                @if($deliveryInfo && !empty($deliveryInfo['payment_method']))
-                                    {{ ucfirst($deliveryInfo['payment_method']) }}
-                                @else
-                                    Cash on Delivery
-                                @endif
-                            </span>
+                          
                         </div>
                         <div class="flex justify-between mb-2">
                             <span class="text-gray-600">Payment Status:</span>
@@ -191,7 +184,7 @@
                                 @if($order->total_amount > 500)
                                     <span class="text-green-600">FREE</span>
                                 @else
-                                    ₹50.00
+                                    50.00
                                 @endif
                             </span>
                         </div>

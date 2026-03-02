@@ -24,7 +24,7 @@
                 <h6 class="font-semibold text-gray-900">Filters</h6>
             </div>
             <div class="p-4">
-                <form method="GET">
+                <form method="GET" id="filterForm">
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                         <select name="category_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm">
@@ -65,39 +65,37 @@
                 <h6 class="font-semibold text-gray-900">Bulk Actions</h6>
             </div>
             <div class="p-4">
-                <form method="POST" action="{{ route('admin.products.bulk') }}" id="bulkForm">
-                    @csrf
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Action</label>
-                        <select name="action" id="bulkActionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm" required>
-                            <option value="">Select Action</option>
-                            <option value="delete">Delete Selected</option>
-                            <option value="update_status">Update Status</option>
-                            <option value="update_category">Update Category</option>
-                        </select>
-                    </div>
-                    
-                    <div id="statusField" class="mb-4 hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm">
-                            <option value="available">Available</option>
-                            <option value="unavailable">Unavailable</option>
-                        </select>
-                    </div>
-                    
-                    <div id="categoryField" class="mb-4 hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                        <select name="category_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm">
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" id="bulkSubmit" disabled>
-                        Apply to Selected
-                    </button>
-                </form>
+                <!-- This is NOT a form - just controls that will work with JavaScript -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Action</label>
+                    <select id="bulkActionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm" required>
+                        <option value="">Select Action</option>
+                        <option value="delete">Delete Selected</option>
+                        <option value="update_status">Update Status</option>
+                        <option value="update_category">Update Category</option>
+                    </select>
+                </div>
+                
+                <div id="statusField" class="mb-4 hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="bulkStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm">
+                        <option value="available">Available</option>
+                        <option value="unavailable">Unavailable</option>
+                    </select>
+                </div>
+                
+                <div id="categoryField" class="mb-4 hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select id="bulkCategoryId" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm">
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <button type="button" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" id="bulkSubmit" disabled onclick="submitBulkAction()">
+                    Apply to Selected
+                </button>
             </div>
         </div>
     </div>
@@ -158,7 +156,6 @@
                                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                             <input type="checkbox" 
                                                    class="product-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                                                   name="products[]" 
                                                    value="{{ $product->id }}">
                                         </td>
                                         <td class="px-4 sm:px-6 py-4">
@@ -187,12 +184,12 @@
                                             <span class="text-sm font-semibold text-gray-900">${{ number_format($product->price, 2) }}</span>
                                         </td>
                                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                            @if($product->stock_quantity <= 0)
+                                            @if($product->stock <= 0)
                                                 <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Out of Stock</span>
-                                            @elseif($product->stock_quantity < 10)
-                                                <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Low Stock ({{ $product->stock_quantity }})</span>
+                                            @elseif($product->stock < 10)
+                                                <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Low Stock ({{ $product->stock }})</span>
                                             @else
-                                                <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">{{ $product->stock_quantity }}</span>
+                                                <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">{{ $product->stock }}</span>
                                             @endif
                                         </td>
                                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
@@ -253,6 +250,15 @@
         </div>
     </div>
 </div>
+
+<!-- Hidden form for bulk actions (submitted via JavaScript) -->
+<form method="POST" action="{{ route('admin.products.bulk') }}" id="bulkForm" style="display: none;">
+    @csrf
+    <input type="hidden" name="products" id="bulkProductsInput">
+    <input type="hidden" name="action" id="bulkActionInput">
+    <input type="hidden" name="status" id="bulkStatusInput">
+    <input type="hidden" name="category_id" id="bulkCategoryInput">
+</form>
 @endsection
 
 @push('scripts')
@@ -265,6 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const actionSelect = document.getElementById('bulkActionSelect');
     const statusField = document.getElementById('statusField');
     const categoryField = document.getElementById('categoryField');
+    const bulkStatus = document.getElementById('bulkStatus');
+    const bulkCategory = document.getElementById('bulkCategoryId');
     
     // Select all checkbox
     if (selectAll) {
@@ -286,6 +294,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const checked = document.querySelectorAll('.product-checkbox:checked');
         if (bulkSubmit) {
             bulkSubmit.disabled = checked.length === 0;
+            
+            // Update button text with count
+            if (checked.length > 0) {
+                bulkSubmit.textContent = `Apply to Selected (${checked.length})`;
+            } else {
+                bulkSubmit.textContent = 'Apply to Selected';
+            }
         }
     }
     
@@ -304,26 +319,78 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (action === 'update_category' && categoryField) {
                 categoryField.classList.remove('hidden');
             }
-        });
-    }
-    
-    // Confirm bulk delete
-    const bulkForm = document.getElementById('bulkForm');
-    if (bulkForm) {
-        bulkForm.addEventListener('submit', function(e) {
-            const action = document.querySelector('select[name="action"]')?.value;
-            const checked = document.querySelectorAll('.product-checkbox:checked').length;
             
-            if (action === 'delete' && checked > 0) {
-                if (!confirm(`Are you sure you want to delete ${checked} product(s)? This action cannot be undone.`)) {
-                    e.preventDefault();
+            // Update button color based on action
+            if (bulkSubmit) {
+                if (action === 'delete') {
+                    bulkSubmit.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    bulkSubmit.classList.add('bg-red-600', 'hover:bg-red-700');
+                } else {
+                    bulkSubmit.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    bulkSubmit.classList.add('bg-blue-600', 'hover:bg-blue-700');
                 }
             }
         });
     }
 });
 
-// Confirm delete function (kept from original)
+// Global function for bulk submit
+function submitBulkAction() {
+    const actionSelect = document.getElementById('bulkActionSelect');
+    const action = actionSelect.value;
+    const checkedBoxes = document.querySelectorAll('.product-checkbox:checked');
+    
+    // Validation
+    if (checkedBoxes.length === 0) {
+        alert('Please select at least one product.');
+        return;
+    }
+    
+    if (!action) {
+        alert('Please select an action.');
+        return;
+    }
+    
+    // Confirm delete
+    if (action === 'delete') {
+        if (!confirm(`Are you sure you want to delete ${checkedBoxes.length} product(s)? This action cannot be undone.`)) {
+            return;
+        }
+    }
+    
+    // Get selected product IDs
+    const productIds = Array.from(checkedBoxes).map(cb => cb.value);
+    
+    // Get form elements
+    const bulkForm = document.getElementById('bulkForm');
+    const productsInput = document.getElementById('bulkProductsInput');
+    const actionInput = document.getElementById('bulkActionInput');
+    const statusInput = document.getElementById('bulkStatusInput');
+    const categoryInput = document.getElementById('bulkCategoryInput');
+    
+    // Set values
+    productsInput.value = JSON.stringify(productIds);
+    actionInput.value = action;
+    
+    // Set additional fields based on action
+    if (action === 'update_status') {
+        const status = document.getElementById('bulkStatus').value;
+        statusInput.value = status;
+        categoryInput.value = ''; // Clear unused field
+    } else if (action === 'update_category') {
+        const categoryId = document.getElementById('bulkCategoryId').value;
+        categoryInput.value = categoryId;
+        statusInput.value = ''; // Clear unused field
+    } else {
+        statusInput.value = '';
+        categoryInput.value = '';
+    }
+    
+    // Submit the form
+    bulkForm.submit();
+}
+
+// Confirm delete function
 function confirmDelete(event, formId) {
     event.preventDefault();
     if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {

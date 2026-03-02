@@ -154,7 +154,7 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <span>Shipping</span>
-                                    <span id="shippingCost">$5.99</span>
+                                    <span id="shippingCost">0 MMKS</span>
                                 </div>
                                 {{-- <div class="flex justify-between">
                                     <span>Tax (10%)</span>
@@ -165,7 +165,7 @@
                             <!-- Total -->
                             <div class="flex justify-between text-lg font-bold border-t border-gray-200 pt-4 mt-4">
                                 <span>Total</span>
-                                <span id="orderTotal">${{ number_format($total, 2) }}</span>
+                                <span id="orderTotal">{{ number_format($total, 2) }} MMKS</span>
                             </div>
 
                             <!-- Terms & Place Order -->

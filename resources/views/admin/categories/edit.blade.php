@@ -71,20 +71,24 @@
                             @enderror
                         </div>
                         
-                        <!-- Status Toggle -->
+                       <!-- Status Toggle - CSS Only Version -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                             <div class="flex items-center h-[42px]">
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer">
+                                <label for="is_active" class="relative inline-block w-12 h-6">
                                     <input type="checkbox" 
                                            id="is_active" 
                                            name="is_active" 
-                                           class="sr-only peer"
+                                           class="opacity-0 w-0 h-0 peer"
                                            {{ old('is_active', $category->is_active) ? 'checked' : '' }}>
-                                    <div class="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-                                </div>
-                                <label for="is_active" class="ml-3 text-sm text-gray-700">Active</label>
+                                    <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300 peer-checked:bg-blue-600"></span>
+                                    <span class="absolute cursor-pointer content-[''] h-5 w-5 left-0.5 bottom-0.5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-6"></span>
+                                </label>
+                                <span class="ml-3 text-sm text-gray-700 peer-checked:font-medium">Active</span>
                             </div>
+                            @error('is_active')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     

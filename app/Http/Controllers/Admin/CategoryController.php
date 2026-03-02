@@ -35,11 +35,11 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'parent_id' => 'nullable|exists:categories,id',
-            'is_active' => 'boolean'
+            'is_active' => 'string'
         ]);
-
+        $request->is_active = $request->is_active == 'on' ? true : false;
         $data = $request->except('image');
-        
+
         // Upload image
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('categories', 'public');
@@ -59,25 +59,29 @@ class CategoryController extends Controller
     {
         $category = Categories::findOrFail($id);
         $parentCategories = Categories::where('id', '!=', $id)
-            ->whereNull('parent_id')
             ->get();
 
         return view('admin.categories.edit', compact('category', 'parentCategories'));
     }
-
     public function update(Request $request, $id)
     {
         $category = Categories::findOrFail($id);
-
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id,
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'parent_id' => 'nullable|exists:categories,id',
-            'is_active' => 'boolean'
+            'is_active' => 'nullable|in:on,1,true' // Allow checkbox values
         ]);
 
-        $data = $request->except('image');
+        // Prepare data array
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'parent_id' => $request->parent_id,
+            'slug' => \Str::slug($request->name),
+            'is_active' => $request->has('is_active') ? true : false // CORRECT WAY
+        ];
 
         // Update image
         if ($request->hasFile('image')) {
@@ -85,16 +89,19 @@ class CategoryController extends Controller
             if ($category->image) {
                 Storage::disk('public')->delete($category->image);
             }
-            
+
             $imagePath = $request->file('image')->store('categories', 'public');
             $data['image'] = $imagePath;
         }
 
-        $data['slug'] = \Str::slug($request->name);
-        $data['is_active'] = $request->has('is_active');
+        // Handle image removal
+        if ($request->has('remove_image') && $category->image) {
+            Storage::disk('public')->delete($category->image);
+            $data['image'] = null;
+        }
 
         // Prevent category from being its own parent
-        if ($data['parent_id'] == $id) {
+        if ($request->parent_id == $id) {
             return redirect()->back()->with('error', 'Category cannot be its own parent.');
         }
 
@@ -103,7 +110,6 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category updated successfully.');
     }
-
     public function destroy($id)
     {
         $category = Categories::findOrFail($id);

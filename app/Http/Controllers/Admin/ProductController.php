@@ -33,11 +33,11 @@ class ProductController extends Controller
         // Filter by status
         if ($request->has('status')) {
             if ($request->status === 'in_stock') {
-                $query->where('stock_quantity', '>', 0);
+                $query->where('stock', '>', 0);
             } elseif ($request->status === 'out_of_stock') {
-                $query->where('stock_quantity', '<=', 0);
+                $query->where('stock', '<=', 0);
             } elseif ($request->status === 'low_stock') {
-                $query->where('stock_quantity', '<', 10)->where('stock_quantity', '>', 0);
+                $query->where('stock', '<', 10)->where('stock', '>', 0);
             }
         }
 
@@ -63,18 +63,17 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'stock_quantity' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string',
             'is_featured' => 'boolean',
-            'is_available' => 'boolean',
+            'is_available' => 'string',
         ]);
-
         $data = $request->except('image', 'images');
-
+        $request->is_available = $request->is_available == 'on' ? true : false;
         // Upload main image
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
@@ -213,30 +212,35 @@ class ProductController extends Controller
     public function bulkUpdate(Request $request)
     {
         $request->validate([
-            'products' => 'required|array',
+            'products' => 'required',
             'action' => 'required|in:delete,update_status,update_category',
-            'status' => 'required_if:action,update_status',
+            'status' => 'required_if:action,update_status|in:available,unavailable',
             'category_id' => 'required_if:action,update_category|exists:categories,id',
         ]);
 
-        $productIds = $request->products;
+        // Decode JSON if it's a string
+        $productIds = is_string($request->products)
+            ? json_decode($request->products)
+            : $request->products;
+
+        $count = count($productIds);
 
         switch ($request->action) {
             case 'delete':
                 Products::whereIn('id', $productIds)->delete();
-                $message = 'Products deleted successfully.';
+                $message = "{$count} product(s) deleted successfully.";
                 break;
 
             case 'update_status':
                 Products::whereIn('id', $productIds)
                     ->update(['is_available' => $request->status === 'available']);
-                $message = 'Products status updated successfully.';
+                $message = "{$count} product(s) status updated successfully.";
                 break;
 
             case 'update_category':
                 Products::whereIn('id', $productIds)
                     ->update(['category_id' => $request->category_id]);
-                $message = 'Products category updated successfully.';
+                $message = "{$count} product(s) category updated successfully.";
                 break;
         }
 

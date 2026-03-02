@@ -34,7 +34,7 @@
                         </span>
                     </td>
                     <td class="p-4 font-semibold">
-                        ₹{{ number_format($order->total_amount, 2) }}
+                        {{ number_format($order->total_amount, 2) }} MMKS
                     </td>
                     <td class="p-4 text-right">
                         <a href="{{ route('customer.orders.show', $order->order_number) }}"
