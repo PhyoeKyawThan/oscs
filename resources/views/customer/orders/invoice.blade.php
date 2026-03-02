@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,28 +12,34 @@
             .no-print {
                 display: none !important;
             }
+
             body {
                 margin: 0;
                 padding: 0;
             }
+
             .invoice-container {
                 box-shadow: none !important;
                 border: 1px solid #ddd;
             }
+
             .page-break {
                 page-break-before: always;
             }
         }
+
         @page {
             margin: 20px;
         }
     </style>
 </head>
+
 <body class="bg-gray-50 text-gray-800">
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Print Button -->
         <div class="no-print mb-6 flex justify-end">
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
+            <button onclick="window.print()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
                 <i class="fas fa-print"></i>
                 Print Invoice
             </button>
@@ -41,12 +48,13 @@
         <!-- Invoice Container -->
         <div class="invoice-container bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
             <!-- Header -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-gray-100 pb-6 mb-8">
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-gray-100 pb-6 mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">INVOICE</h1>
                     <p class="text-gray-500 mt-1">Order #{{ $order->order_number }}</p>
                 </div>
-                
+
                 <div class="mt-4 md:mt-0 text-right">
                     <div class="inline-flex items-center px-4 py-2 rounded-lg {{ $order->status_color }}">
                         <span class="font-semibold">{{ $order->status }}</span>
@@ -80,20 +88,20 @@
                     <div class="bg-gray-50 p-4 rounded-lg">
                         <p class="font-bold text-gray-900">{{ $order->user->name }}</p>
                         <p class="text-gray-600 mt-2">{{ $order->user->email }}</p>
-                        
+
                         @if($deliveryInfo && is_array($deliveryInfo))
                             @if(!empty($deliveryInfo['phone']))
                                 <p class="text-gray-600">
                                     <i class="fas fa-phone mr-2"></i>{{ $deliveryInfo['phone'] }}
                                 </p>
                             @endif
-                            
+
                             @if(!empty($deliveryInfo['address']))
                                 <div class="mt-2">
                                     <p class="font-medium text-gray-700 mb-1">Delivery Address:</p>
                                     <p class="text-gray-600">{{ $deliveryInfo['address'] }}</p>
                                     @if(!empty($deliveryInfo['city']))
-                                        <p class="text-gray-600">{{ $deliveryInfo['city'] }}, 
+                                        <p class="text-gray-600">{{ $deliveryInfo['city'] }},
                                             @if(!empty($deliveryInfo['state'])){{ $deliveryInfo['state'] }}, @endif
                                             @if(!empty($deliveryInfo['zip_code'])){{ $deliveryInfo['zip_code'] }}@endif
                                         </p>
@@ -123,27 +131,28 @@
                         </thead>
                         <tbody>
                             @foreach($order->items as $item)
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div class="ml-3">
-                                            <p class="font-medium text-gray-900">{{ $item->product->name ?? 'Product' }}</p>
-                                            @if($item->product && $item->product->sku)
-                                                <p class="text-sm text-gray-500">SKU: {{ $item->product->sku }}</p>
-                                            @endif
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center">
+                                            <div class="ml-3">
+                                                <p class="font-medium text-gray-900">{{ $item->product->name ?? 'Product' }}
+                                                </p>
+                                                @if($item->product && $item->product->sku)
+                                                    <p class="text-sm text-gray-500">SKU: {{ $item->product->sku }}</p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4 text-gray-700">
-                                    {{ number_format($item->product->price, 2) }} MMKS
-                                </td>
-                                <td class="py-4 px-4 text-gray-700">
-                                    {{ $item->quantity }}
-                                </td>
-                                <td class="py-4 px-4 font-medium text-gray-900">
-                                    {{ number_format($item->product->price * $item->quantity, 2) }} MMKS
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td class="py-4 px-4 text-gray-700">
+                                        {{ number_format($item->product->price, 2) }} MMKS
+                                    </td>
+                                    <td class="py-4 px-4 text-gray-700">
+                                        {{ $item->quantity }}
+                                    </td>
+                                    <td class="py-4 px-4 font-medium text-gray-900">
+                                        {{ number_format($item->product->price * $item->quantity, 2) }} MMKS
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -157,7 +166,7 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Information</h3>
                     <div class="bg-gray-50 p-4 rounded-lg">
                         <div class="flex justify-between mb-2">
-                          
+
                         </div>
                         <div class="flex justify-between mb-2">
                             <span class="text-gray-600">Payment Status:</span>
@@ -176,39 +185,35 @@
                     <div class="bg-gray-50 p-4 rounded-lg">
                         <div class="flex justify-between mb-3">
                             <span class="text-gray-600">Subtotal:</span>
-                            <span class="font-medium text-gray-900">₹{{ number_format($order->total_amount, 2) }}</span>
+                            <span class="font-medium text-gray-900">{{ number_format($order->total_amount, 2) }}
+                                MMKS</span>
                         </div>
                         <div class="flex justify-between mb-3">
                             <span class="text-gray-600">Shipping:</span>
                             <span class="font-medium text-gray-900">
-                                @if($order->total_amount > 500)
-                                    <span class="text-green-600">FREE</span>
+                                @if($deliveryInfo['method'] == 'standard')
+                                    <span class="text-green-600">3000 MMKS</span>
+                                @elseif($deliveryInfo['method'] == 'express')
+                                    <span class="text-green-600">4000 MMKS</span>
                                 @else
-                                    50.00
+                                    <span class="text-green-600">FREE</span>
                                 @endif
-                            </span>
-                        </div>
-                        @if($order->total_amount <= 500)
-                        <div class="flex justify-between mb-3 border-b pb-3">
-                            <span class="text-gray-600">Shipping Fee:</span>
-                            <span class="font-medium text-gray-900">₹50.00</span>
-                        </div>
-                        @endif
-                        <div class="flex justify-between mb-3">
-                            <span class="text-gray-600">Tax ({{ config('invoice.tax_rate', 18) }}%):</span>
-                            <span class="font-medium text-gray-900">
-                                ₹{{ number_format($order->total_amount * (config('invoice.tax_rate', 18) / 100), 2) }}
                             </span>
                         </div>
                         <div class="flex justify-between text-lg font-bold pt-3 border-t">
                             <span class="text-gray-900">Grand Total:</span>
                             <span class="text-blue-600">
                                 @php
-                                    $shipping = $order->total_amount > 500 ? 0 : 50;
-                                    $tax = $order->total_amount * (config('invoice.tax_rate', 18) / 100);
-                                    $grandTotal = $order->total_amount + $shipping + $tax;
+                                    $shipping = $deliveryInfo['method'] ?? '';
+                                    $shippingCost = 0;
+                                    if ($shipping == 'express') {
+                                        $shippingCost = 4000.00;
+                                    } elseif ($shipping == 'standard') {
+                                        $shippingCost = 3000.00;
+                                    }
+                                    $grandTotal = $order->total_amount + $shippingCost;
                                 @endphp
-                                ₹{{ number_format($grandTotal, 2) }}
+                                {{ number_format($grandTotal, 2) }} MMKS
                             </span>
                         </div>
                     </div>
@@ -238,7 +243,7 @@
                         <p>This is a computer-generated invoice. No signature required.</p>
                     </div>
                 </div>
-                
+
                 <!-- QR Code Placeholder -->
                 <div class="mt-6 flex flex-col items-center">
                     <div class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded-lg mb-2">
@@ -251,15 +256,18 @@
 
         <!-- Download Options -->
         <div class="no-print mt-8 flex flex-wrap gap-4 justify-center">
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
+            <button onclick="window.print()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
                 <i class="fas fa-print"></i>
                 Print Invoice
             </button>
-            {{-- <button onclick="downloadPDF()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
+            {{-- <button onclick="downloadPDF()"
+                class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
                 <i class="fas fa-file-pdf"></i>
                 Download as PDF
             </button> --}}
-            <a href="{{ route('customer.orders.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
+            <a href="{{ route('customer.orders.index') }}"
+                class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
                 <i class="fas fa-arrow-left"></i>
                 Back to Orders
             </a>
@@ -277,10 +285,11 @@
 
         // Auto-print option
         @if(request()->has('print'))
-            window.addEventListener('load', function() {
+            window.addEventListener('load', function () {
                 window.print();
             });
         @endif
     </script>
 </body>
+
 </html>
