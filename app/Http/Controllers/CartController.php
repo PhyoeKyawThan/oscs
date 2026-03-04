@@ -66,7 +66,7 @@ class CartController extends Controller
                 'name' => $product->name,
                 'price' => $product->price,
                 'quantity' => $request->quantity,
-                'image' => $product->product_image,
+                'image' => strpos($product->image, 'products') ? $product->image : 'products/'.$product->image,
                 'stock' => $product->stock,
                 'category' => $product->category->name ?? 'Uncategorized'
             ];

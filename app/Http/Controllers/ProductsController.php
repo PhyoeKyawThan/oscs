@@ -34,7 +34,6 @@ class ProductsController extends Controller
             ->where('id', '!=', $id)
             ->limit(4)
             ->get();
-
         return response()->json(['products' => $relatedProducts]);
     }
     public function index(Request $request)

@@ -7,7 +7,6 @@
             <a href="{{ route('products.index') }}" class="mb-6 inline-flex items-center text-primary hover:underline">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Products
             </a>
-
             <!-- Product Details -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
                 <div class="md:flex">
@@ -15,24 +14,26 @@
                     <div class="md:w-1/2 p-8">
                         <!-- Main Image -->
                         <div class="relative h-96 overflow-hidden rounded-lg mb-4">
-                            <img id="mainProductImage" 
-                                 src="{{ $product->image_url }}" 
-                                 alt="{{ $product->name }}"
-                                 class="w-full h-full object-cover transition-all duration-300 cursor-zoom-in"
-                                 data-zoom-src="{{ $product->image_url }}">
-                            
+                            <img id="mainProductImage" src="{{ $product->getImageUrlAttribute() }}"
+                                alt="{{ $product->name }}"
+                                class="w-full h-full object-cover transition-all duration-300 cursor-zoom-in"
+                                data-zoom-src="{{ $product->getImageUrlAttribute() }}">
+
                             @if($product->stock === 0)
-                                <div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
+                                <div
+                                    class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
                                     Out of Stock
                                 </div>
                             @elseif($product->stock < 10)
-                                <div class="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
+                                <div
+                                    class="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
                                     Low Stock
                                 </div>
                             @endif
-                            
+
                             @if($product->is_featured)
-                                <div class="absolute top-4 left-4 bg-purple-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
+                                <div
+                                    class="absolute top-4 left-4 bg-purple-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
                                     <i class="fas fa-star mr-1"></i> Featured
                                 </div>
                             @endif
@@ -45,19 +46,17 @@
                                 <div class="flex flex-wrap gap-3">
                                     <!-- Main image thumbnail -->
                                     <div class="w-20 h-20 border-2 border-primary rounded-lg overflow-hidden cursor-pointer gallery-thumbnail active"
-                                         data-image-src="{{ $product->image_url }}">
-                                        <img src="{{ $product->image_url }}" 
-                                             alt="{{ $product->name }}"
-                                             class="w-full h-full object-cover">
+                                        data-image-src="{{ $product->getImageUrlAttribute() }}">
+                                        <img src="{{ $product->getImageUrlAttribute() }}" alt="{{ $product->name }}"
+                                            class="w-full h-full object-cover">
                                     </div>
-                                    
                                     <!-- Gallery image thumbnails -->
-                                    @foreach($product->gallery_images as $index => $galleryImage)
+                                    @foreach($product->getGalleryImagesAttribute() as $index => $galleryImage)
                                         <div class="w-20 h-20 border-2 border-gray-200 rounded-lg overflow-hidden cursor-pointer gallery-thumbnail hover:border-primary transition-colors"
-                                             data-image-src="{{ $galleryImage['url'] }}">
-                                            <img src="{{ $galleryImage['url'] }}" 
-                                                 alt="{{ $product->name }} - Image {{ $index + 1 }}"
-                                                 class="w-full h-full object-cover">
+                                            data-image-src="{{ $galleryImage['url'] }}">
+                                            <img src="{{ $galleryImage['url'] }}"
+                                                alt="{{ $product->name }} - Image {{ $index + 1 }}"
+                                                class="w-full h-full object-cover">
                                         </div>
                                     @endforeach
                                 </div>
@@ -65,15 +64,19 @@
                         @endif
 
                         <!-- Image Zoom Modal -->
-                        <div id="imageZoomModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
+                        <div id="imageZoomModal"
+                            class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
                             <div class="relative max-w-4xl max-h-full">
-                                <button id="closeZoomModal" class="absolute top-4 right-4 text-white text-3xl z-10 hover:text-gray-300">
+                                <button id="closeZoomModal"
+                                    class="absolute top-4 right-4 text-white text-3xl z-10 hover:text-gray-300">
                                     <i class="fas fa-times"></i>
                                 </button>
-                                <button id="prevImage" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-3xl z-10 hover:text-gray-300">
+                                <button id="prevImage"
+                                    class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-3xl z-10 hover:text-gray-300">
                                     <i class="fas fa-chevron-left"></i>
                                 </button>
-                                <button id="nextImage" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-3xl z-10 hover:text-gray-300">
+                                <button id="nextImage"
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-3xl z-10 hover:text-gray-300">
                                     <i class="fas fa-chevron-right"></i>
                                 </button>
                                 <img id="zoomedImage" class="max-w-full max-h-screen" src="" alt="">
@@ -85,7 +88,8 @@
                     <div class="md:w-1/2 p-8">
                         <!-- Category Badge -->
                         <div class="mb-4">
-                            <span class="inline-block px-3 py-1 bg-primary bg-opacity-10 text-gray-100 text-sm rounded-full">
+                            <span
+                                class="inline-block px-3 py-1 bg-primary bg-opacity-10 text-gray-100 text-sm rounded-full">
                                 {{ $product->category->name ?? 'Uncategorized' }}
                             </span>
                         </div>
@@ -104,7 +108,7 @@
 
                         <!-- Price -->
                         <div class="mb-6">
-                            <span class="text-4xl font-bold text-primary">${{ number_format($product->price, 2) }}</span>
+                            <span class="text-4xl font-bold text-primary">{{ number_format($product->price, 2) }} MMKS</span>
 
                             <!-- Stock Status -->
                             <div class="mt-2">
@@ -199,7 +203,8 @@
                                 </button>
                             @else
                                 <!-- Disabled state -->
-                                <div class="w-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 py-3 rounded-lg text-center font-semibold">
+                                <div
+                                    class="w-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 py-3 rounded-lg text-center font-semibold">
                                     <i class="fas fa-ban mr-2"></i>
                                     {{ $product->stock === 0 ? 'Out of Stock' : 'Not Available for Purchase' }}
                                 </div>
@@ -227,241 +232,249 @@
 @endsection
 
 @push('styles')
-<style>
-    .gallery-thumbnail.active {
-        border-color: #3B82F6;
-    }
-    
-    .gallery-thumbnail img {
-        transition: transform 0.3s ease;
-    }
-    
-    .gallery-thumbnail:hover img {
-        transform: scale(1.1);
-    }
-    
-    #imageZoomModal img {
-        animation: zoomIn 0.3s ease;
-    }
-    
-    @keyframes zoomIn {
-        from { transform: scale(0.8); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-</style>
+    <style>
+        .gallery-thumbnail.active {
+            border-color: #3B82F6;
+        }
+
+        .gallery-thumbnail img {
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-thumbnail:hover img {
+            transform: scale(1.1);
+        }
+
+        #imageZoomModal img {
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Gallery functionality
-        const mainImage = document.getElementById('mainProductImage');
-        const thumbnails = document.querySelectorAll('.gallery-thumbnail');
-        const zoomModal = document.getElementById('imageZoomModal');
-        const zoomedImage = document.getElementById('zoomedImage');
-        const closeZoomModal = document.getElementById('closeZoomModal');
-        const prevImage = document.getElementById('prevImage');
-        const nextImage = document.getElementById('nextImage');
-        
-        let currentImageIndex = 0;
-        let galleryImages = [];
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Gallery functionality
+            const mainImage = document.getElementById('mainProductImage');
+            const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+            const zoomModal = document.getElementById('imageZoomModal');
+            const zoomedImage = document.getElementById('zoomedImage');
+            const closeZoomModal = document.getElementById('closeZoomModal');
+            const prevImage = document.getElementById('prevImage');
+            const nextImage = document.getElementById('nextImage');
 
-        // Collect all gallery images
-        thumbnails.forEach((thumb, index) => {
-            galleryImages.push(thumb.dataset.imageSrc);
-            thumb.addEventListener('click', function() {
-                // Update main image
-                const newSrc = this.dataset.imageSrc;
-                mainImage.src = newSrc;
-                mainImage.dataset.zoomSrc = newSrc;
-                
-                // Update active thumbnail
-                thumbnails.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Update current index
-                currentImageIndex = index;
-            });
-        });
+            let currentImageIndex = 0;
+            let galleryImages = [];
 
-        // Image zoom functionality
-        if (mainImage) {
-            mainImage.addEventListener('click', function() {
-                if (this.dataset.zoomSrc) {
-                    zoomedImage.src = this.dataset.zoomSrc;
-                    zoomModal.classList.remove('hidden');
-                    zoomModal.classList.add('flex');
-                    document.body.classList.add('overflow-hidden');
-                }
-            });
-        }
-
-        // Close zoom modal
-        if (closeZoomModal) {
-            closeZoomModal.addEventListener('click', function() {
-                zoomModal.classList.add('hidden');
-                zoomModal.classList.remove('flex');
-                document.body.classList.remove('overflow-hidden');
-            });
-            
-            // Close on background click
-            zoomModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    zoomModal.classList.add('hidden');
-                    zoomModal.classList.remove('flex');
-                    document.body.classList.remove('overflow-hidden');
-                }
-            });
-            
-            // Close on Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && !zoomModal.classList.contains('hidden')) {
-                    zoomModal.classList.add('hidden');
-                    zoomModal.classList.remove('flex');
-                    document.body.classList.remove('overflow-hidden');
-                }
-            });
-        }
-
-        // Navigation in zoom modal
-        if (prevImage && nextImage && galleryImages.length > 1) {
-            prevImage.addEventListener('click', function(e) {
-                e.stopPropagation();
-                currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-                zoomedImage.src = galleryImages[currentImageIndex];
-                updateActiveThumbnail();
-            });
-            
-            nextImage.addEventListener('click', function(e) {
-                e.stopPropagation();
-                currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-                zoomedImage.src = galleryImages[currentImageIndex];
-                updateActiveThumbnail();
-            });
-            
-            // Keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                if (!zoomModal.classList.contains('hidden')) {
-                    if (e.key === 'ArrowLeft') {
-                        currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-                        zoomedImage.src = galleryImages[currentImageIndex];
-                        updateActiveThumbnail();
-                    } else if (e.key === 'ArrowRight') {
-                        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-                        zoomedImage.src = galleryImages[currentImageIndex];
-                        updateActiveThumbnail();
-                    }
-                }
-            });
-        }
-        
-        function updateActiveThumbnail() {
+            // Collect all gallery images
             thumbnails.forEach((thumb, index) => {
-                if (index === currentImageIndex) {
-                    thumb.classList.add('active');
-                    mainImage.src = galleryImages[index];
-                    mainImage.dataset.zoomSrc = galleryImages[index];
-                } else {
-                    thumb.classList.remove('active');
-                }
+                galleryImages.push(thumb.dataset.imageSrc);
+                thumb.addEventListener('click', function () {
+                    // Update main image
+                    const newSrc = this.dataset.imageSrc;
+                    mainImage.src = newSrc;
+                    mainImage.dataset.zoomSrc = newSrc;
+
+                    // Update active thumbnail
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update current index
+                    currentImageIndex = index;
+                });
             });
-        }
 
-        // Quantity selector functionality
-        const quantityInput = document.getElementById('quantity');
-        const decreaseBtn = document.querySelector('.decrease-qty');
-        const increaseBtn = document.querySelector('.increase-qty');
-        const addToCartBtn = document.getElementById('addToCart');
-
-        if (decreaseBtn && quantityInput) {
-            decreaseBtn.addEventListener('click', function() {
-                let currentValue = parseInt(quantityInput.value);
-                if (currentValue > 1) {
-                    quantityInput.value = currentValue - 1;
-                }
-            });
-        }
-
-        if (increaseBtn && quantityInput) {
-            increaseBtn.addEventListener('click', function() {
-                let currentValue = parseInt(quantityInput.value);
-                let maxStock = parseInt(quantityInput.max);
-                if (currentValue < maxStock) {
-                    quantityInput.value = currentValue + 1;
-                }
-            });
-        }
-
-        // Add to cart functionality
-        if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', function() {
-                const productId = this.dataset.productId;
-                const quantity = quantityInput ? quantityInput.value : 1;
-                console.log(quantity);
-                // Add your cart logic here
-                console.log('Adding to cart:', { productId, quantity });
-                // Implement your cart AJAX call here
-            });
-        }
-
-        // Load related products
-        function loadRelatedProducts() {
-            fetch(`/products/{{ $product->id }}/related`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    const container = document.getElementById('relatedProducts');
-                    if (!container) return;
-
-                    if (data.products && data.products.length > 0) {
-                        let html = '';
-                        data.products.forEach(product => {
-                            const imageUrl = product.image_url || (product.image ? `{{ asset('storage', null) }}${product.image}` : '/images/placeholder.jpg');
-                            
-                            html += `
-                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
-                                <a href="/products/${product.id}" class="block">
-                                    <div class="relative h-48 overflow-hidden">
-                                        <img src="${imageUrl}" 
-                                             alt="${product.name}"
-                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                        ${product.stock === 0 ? 
-                                            '<div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">Out of Stock</div>' : 
-                                            ''}
-                                        ${product.is_featured ? 
-                                            '<div class="absolute top-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded"><i class="fas fa-star mr-1"></i> Featured</div>' : 
-                                            ''}
-                                    </div>
-                                    <div class="p-4">
-                                        <h3 class="font-bold mb-2 truncate">${product.name}</h3>
-                                        <p class="text-primary font-bold text-lg">$${parseFloat(product.price).toFixed(2)}</p>
-                                        ${product.stock > 0 ? 
-                                            `<p class="text-green-500 text-sm mt-1"><i class="fas fa-check-circle mr-1"></i>In Stock</p>` : 
-                                            ''}
-                                    </div>
-                                </a>
-                            </div>`;
-                        });
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">No related products found.</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading related products:', error);
-                    const container = document.getElementById('relatedProducts');
-                    if (container) {
-                        container.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">Failed to load related products.</p>';
+            // Image zoom functionality
+            if (mainImage) {
+                mainImage.addEventListener('click', function () {
+                    if (this.dataset.zoomSrc) {
+                        zoomedImage.src = this.dataset.zoomSrc;
+                        zoomModal.classList.remove('hidden');
+                        zoomModal.classList.add('flex');
+                        document.body.classList.add('overflow-hidden');
                     }
                 });
-        }
+            }
 
-        // Only load related products if the section exists
-        if (document.getElementById('relatedProducts')) {
-            loadRelatedProducts();
-        }
-    });
-</script>
+            // Close zoom modal
+            if (closeZoomModal) {
+                closeZoomModal.addEventListener('click', function () {
+                    zoomModal.classList.add('hidden');
+                    zoomModal.classList.remove('flex');
+                    document.body.classList.remove('overflow-hidden');
+                });
+
+                // Close on background click
+                zoomModal.addEventListener('click', function (e) {
+                    if (e.target === this) {
+                        zoomModal.classList.add('hidden');
+                        zoomModal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && !zoomModal.classList.contains('hidden')) {
+                        zoomModal.classList.add('hidden');
+                        zoomModal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            }
+
+            // Navigation in zoom modal
+            if (prevImage && nextImage && galleryImages.length > 1) {
+                prevImage.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+                    zoomedImage.src = galleryImages[currentImageIndex];
+                    updateActiveThumbnail();
+                });
+
+                nextImage.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+                    zoomedImage.src = galleryImages[currentImageIndex];
+                    updateActiveThumbnail();
+                });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', function (e) {
+                    if (!zoomModal.classList.contains('hidden')) {
+                        if (e.key === 'ArrowLeft') {
+                            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+                            zoomedImage.src = galleryImages[currentImageIndex];
+                            updateActiveThumbnail();
+                        } else if (e.key === 'ArrowRight') {
+                            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+                            zoomedImage.src = galleryImages[currentImageIndex];
+                            updateActiveThumbnail();
+                        }
+                    }
+                });
+            }
+
+            function updateActiveThumbnail() {
+                thumbnails.forEach((thumb, index) => {
+                    if (index === currentImageIndex) {
+                        thumb.classList.add('active');
+                        mainImage.src = galleryImages[index];
+                        mainImage.dataset.zoomSrc = galleryImages[index];
+                    } else {
+                        thumb.classList.remove('active');
+                    }
+                });
+            }
+
+            // Quantity selector functionality
+            const quantityInput = document.getElementById('quantity');
+            const decreaseBtn = document.querySelector('.decrease-qty');
+            const increaseBtn = document.querySelector('.increase-qty');
+            const addToCartBtn = document.getElementById('addToCart');
+
+            if (decreaseBtn && quantityInput) {
+                decreaseBtn.addEventListener('click', function () {
+                    let currentValue = parseInt(quantityInput.value);
+                    if (currentValue > 1) {
+                        quantityInput.value = currentValue - 1;
+                    }
+                });
+            }
+
+            if (increaseBtn && quantityInput) {
+                increaseBtn.addEventListener('click', function () {
+                    let currentValue = parseInt(quantityInput.value);
+                    let maxStock = parseInt(quantityInput.max);
+                    if (currentValue < maxStock) {
+                        quantityInput.value = currentValue + 1;
+                    }
+                });
+            }
+
+            // Add to cart functionality
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function () {
+                    const productId = this.dataset.productId;
+                    const quantity = quantityInput ? quantityInput.value : 1;
+                    console.log(quantity);
+                    // Add your cart logic here
+                    console.log('Adding to cart:', { productId, quantity });
+                    // Implement your cart AJAX call here
+                });
+            }
+
+            // Load related products
+            function loadRelatedProducts() {
+                fetch(`/products/{{ $product->id }}/related`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        const container = document.getElementById('relatedProducts');
+                        if (!container) return;
+
+                        if (data.products && data.products.length > 0) {
+                            let html = '';
+                            data.products.forEach(product => {
+                                const fileName = product.image.split('/').filter(Boolean).pop();
+                                const imageUrl = product.image_url || (product.image ? `{{ asset('storage', null) }}/products/${fileName}` : '/images/placeholder.jpg');
+
+                                html += `
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
+                                            <a href="/products/${product.id}" class="block">
+                                                <div class="relative h-48 overflow-hidden">
+                                                    <img src="${imageUrl}" 
+                                                         alt="${product.name}"
+                                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                    ${product.stock === 0 ?
+                                        '<div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">Out of Stock</div>' :
+                                        ''}
+                                                    ${product.is_featured ?
+                                        '<div class="absolute top-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded"><i class="fas fa-star mr-1"></i> Featured</div>' :
+                                        ''}
+                                                </div>
+                                                <div class="p-4">
+                                                    <h3 class="font-bold mb-2 truncate">${product.name}</h3>
+                                                    <p class="text-primary font-bold text-lg">${parseFloat(product.price).toFixed(2)} MMKS</p>
+                                                    ${product.stock > 0 ?
+                                        `<p class="text-green-500 text-sm mt-1"><i class="fas fa-check-circle mr-1"></i>In Stock</p>` :
+                                        ''}
+                                                </div>
+                                            </a>
+                                        </div>`;
+                            });
+                            container.innerHTML = html;
+                        } else {
+                            container.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">No related products found.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading related products:', error);
+                        const container = document.getElementById('relatedProducts');
+                        if (container) {
+                            container.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">Failed to load related products.</p>';
+                        }
+                    });
+            }
+
+            // Only load related products if the section exists
+            if (document.getElementById('relatedProducts')) {
+                loadRelatedProducts();
+            }
+        });
+    </script>
 @endpush

@@ -40,10 +40,20 @@ class Products extends Model
      */
     public function getImageUrlAttribute()
     {
-        if ($this->image && Storage::disk('public')->exists($this->image)) {
-            return asset('storage/' . $this->image);
+        if ($this->image) {
+            $imagePath = $this->image;
+            if (Storage::disk('public')->exists($imagePath)) {
+                if (strpos($imagePath, 'products/') !== 0) {
+                    return asset('storage/products/' . $imagePath);
+                }
+                return asset('storage/' . $imagePath);
+            }
+            if (Storage::disk('public')->exists('products/' . $imagePath)) {
+                return asset('storage/products/' . $imagePath);
+            }
         }
-        return asset('images/placeholder.jpg'); // Default placeholder
+
+        return asset('images/default-product.jpg');
     }
 
     /**
@@ -52,8 +62,8 @@ class Products extends Model
     public function getGalleryImagesAttribute()
     {
         $gallery = [];
-        if ($this->images && is_array(json_decode($this->images))) {
-            foreach (json_decode($this->images) as $imagePath) {
+        if ($this->images && is_array($this->images)) {
+            foreach ($this->images as $imagePath) {
                 if (Storage::disk('public')->exists($imagePath)) {
                     $gallery[] = [
                         'path' => $imagePath,
@@ -61,9 +71,16 @@ class Products extends Model
                         'filename' => basename($imagePath)
                     ];
                 }
+                if (Storage::disk('public')->exists('products/gallery/' . $imagePath)) {
+                    $gallery[] = [
+                        'path' => $imagePath,
+                        'url' => asset('storage/products/gallery/' . $imagePath),
+                        'filename' => basename($imagePath)
+                    ];
+                }
             }
         }
-        
+
         return $gallery;
     }
 

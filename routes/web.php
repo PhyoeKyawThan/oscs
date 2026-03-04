@@ -71,8 +71,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('logout', [Admin\AuthController::class, 'logout'])->name('logout');
     
     // Protected Admin Routes
-    Route::middleware(['auth:admin'])->group(function () {
+    Route::middleware(['admin.auth'])->group(function () {
         // Dashboard
+        Route::get('', [Admin\DashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
         
         // Profile

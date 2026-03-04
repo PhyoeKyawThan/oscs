@@ -211,13 +211,13 @@ class ProductController extends Controller
 
     public function bulkUpdate(Request $request)
     {
+
         $request->validate([
             'products' => 'required',
             'action' => 'required|in:delete,update_status,update_category',
-            'status' => 'required_if:action,update_status|in:available,unavailable',
-            'category_id' => 'required_if:action,update_category|exists:categories,id',
+            'status' => 'required_if:action,update_status|nullable|in:available,unavailable',
+            'category_id' => 'required_if:action,update_category|nullable|exists:categories,id',
         ]);
-
         // Decode JSON if it's a string
         $productIds = is_string($request->products)
             ? json_decode($request->products)

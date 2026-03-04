@@ -189,7 +189,7 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Current Image</label>
                                     <div class="text-center">
                                         @if($product->image)
-                                            <img src="{{ asset('storage/' . $product->image) }}" 
+                                            <img src="{{ $product->getImageUrlAttribute() }}" 
                                                  alt="{{ $product->name }}" 
                                                  class="max-h-36 rounded-lg mx-auto mb-3 border border-gray-200"
                                                  style="max-height: 150px;">
@@ -235,11 +235,11 @@
                                 <div class="mb-3">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Additional Images</label>
                                     
-                                    @if($product->images && is_array(json_decode($product->images, true)))
+                                    @if($product->images && is_array($product->images))
                                         <div class="space-y-2 mb-3">
-                                            @foreach(json_decode($product->images, true) as $index => $additionalImage)
+                                            @foreach($product->getGalleryImagesAttribute() as $index => $additionalImage)
                                                 <div class="flex items-center bg-gray-50 p-2 rounded-lg">
-                                                    <img src="{{ asset('storage/' . $additionalImage) }}" 
+                                                    <img src="{{ $additionalImage['url'] }}" 
                                                          alt="Additional Image {{ $index + 1 }}" 
                                                          class="rounded-lg mr-3 w-12 h-12 object-cover">
                                                     <div class="flex items-center flex-1">

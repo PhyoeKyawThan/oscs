@@ -76,7 +76,7 @@
                             class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow block group">
                             <!-- Product Image -->
                             <div class="relative h-48 overflow-hidden">
-                                <img src="{{ $product->product_image }}" alt="{{ $product->name }}"
+                                <img src="{{ $product->getImageUrlAttribute() }}" alt="{{ $product->name }}"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 @if($product->stock === 0)
                                     <div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-xs">
@@ -106,7 +106,7 @@
                                 <!-- Price and Actions -->
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <span class="text-xl font-bold text-primary">${{ number_format($product->price, 2) }}</span>
+                                        <span class="text-xl font-bold text-primary">{{ number_format($product->price, 2) }} MMKS</span>
                                         @if($product->stock > 0)
                                             <p class="text-xs text-green-500">{{ $product->stock }} in stock</p>
                                         @endif

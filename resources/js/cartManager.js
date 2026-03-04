@@ -165,7 +165,7 @@ export default class CartManager {
                      data-product-id="${item.id}">
                     <!-- Product Image -->
                     <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        <img src="${item.image}" 
+                        <img src="storage/${item.image}" 
                              alt="${item.name}" 
                              class="w-full h-full object-cover">
                     </div>
