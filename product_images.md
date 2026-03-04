@@ -104,17 +104,3 @@
 | **Sheet Mask Set (10 pcs)** | `sheet-mask-set-variety.jpg` | • `sheet-mask-open.jpg`<br>• `mask-on-face.jpg`<br>• `mask-packets.jpg` |
 
 ---
-
-## Quick Image Search Tips for Your Team
-
-### For Stock Photo Websites (Unsplash, Pexels, Shutterstock, iStock):
-Search using these keywords combined with the product type:
-
-| Category | Search Keywords |
-|:---------|:----------------|
-| **Electronics** | "action camera waterproof", "smart watch fitness", "bluetooth speaker portable", "gaming laptop RGB", "wireless earbuds charging case" |
-| **Fashion** | "cashmere sweater beige", "leather crossbody bag brown", "running sneakers blue", "white t-shirt cotton", "leggings high waist pocket" |
-| **Home & Kitchen** | "cookware set stainless", "memory foam pillow", "electric kettle pouring", "bed sheets queen gray", "coffee maker programmable" |
-| **Sports** | "camping tent green", "insulated water bottle", "yoga blocks strap", "mountain bike helmet", "adjustable dumbbells" |
-| **Skincare** | "retinol cream jar", "foaming facial cleanser", "eye cream caffeine", "serum dropper bottle", "sheet mask variety" |
-
